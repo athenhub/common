@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * <p>Spring Boot의 AutoConfiguration 철학인
  * “사용자가 명시적으로 제공한 빈이 있다면 기본 설정을 끈다” 를 따르기 위한 구성이다.</p>
  *
- * @since 0.2.0
  * @author 김지원
+ * @since 0.2.0
  */
 public class NoRestControllerAdviceCondition implements Condition {
 
