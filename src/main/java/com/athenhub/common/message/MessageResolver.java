@@ -13,8 +13,8 @@ package com.athenhub.common.message;
  * </pre>
  * </p>
  *
- * @since 0.2.0
  * @author 김지원
+ * @since 0.2.0
  */
 public interface MessageResolver {
 

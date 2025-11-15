@@ -29,8 +29,8 @@ import java.util.stream.Stream;
  * <p>또한 MessageResolver를 이용해 메시지 템플릿을 해석하여
  * 클라이언트에게 직관적인 메시지를 제공한다.</p>
  *
- * @since 0.2.0
  * @author 김지원
+ * @since 0.2.0
  */
 
 @Slf4j
