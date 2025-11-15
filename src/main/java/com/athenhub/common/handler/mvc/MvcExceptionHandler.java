@@ -43,7 +43,7 @@ public class MvcExceptionHandler {
     /**
      * 비즈니스 예외(ApplicationException)를 처리한다.
      *
-     * <p>커스텀 예외는 ErrorCode 및 messageArgs를 기반으로 메시지를 생성하며,
+     * <p>커스텀 예외는 ErrorCode 및 ErrorArgs를 기반으로 메시지를 생성하며,
      * 개발자가 전달한 직접 메시지가 있는 경우 그 메시지가 우선 적용된다.</p>
      *
      * @param e 발생한 커스텀 애플리케이션 예외
@@ -68,7 +68,7 @@ public class MvcExceptionHandler {
      * 클라이언트에게 상세 오류 정보를 제공한다.</p>
      *
      * @param e MethodArgumentNotValidException
-     * @return ErrorResponse(List<FieldError>) 형태의 HTTP 응답
+     * @return {@code ErrorResponse(List<FieldError>)} 형태의 HTTP 응답
      */
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse<List<FieldError>>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {

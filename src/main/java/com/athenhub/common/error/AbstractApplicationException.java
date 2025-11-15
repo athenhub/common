@@ -19,7 +19,7 @@ import org.springframework.http.HttpStatusCode;
  * }</pre>
  *
  * @author 김지원
- * @since 1.0
+ * @since 0.2.0
  */
 public abstract class AbstractApplicationException extends RuntimeException {
 
@@ -108,6 +108,14 @@ public abstract class AbstractApplicationException extends RuntimeException {
         return errorCode.getCode();
     }
 
+    /**
+     * 메시지 포맷에 사용될 인자 배열을 반환한다.
+     *
+     * <p>예외 처리 시 {@link com.athenhub.common.message.MessageResolver}를 통해
+     * 최종 메시지를 생성하는 데 사용된다.</p>
+     *
+     * @return 메시지 치환용 인자 배열
+     */
     public Object[] getErrorArgs() {
         return errorArgs;
     }
