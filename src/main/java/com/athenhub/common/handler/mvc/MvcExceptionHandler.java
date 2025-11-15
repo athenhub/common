@@ -54,7 +54,7 @@ public class MvcExceptionHandler {
         log.error("[{}]", e.getClass().getSimpleName(), e);
 
         String message = e.getMessage() == null ?
-                messageResolver.resolve(e.getErrorCode().getCode(), e.getErrorArgs()) : e.getMessage();
+                messageResolver.resolve(e.getCode(), e.getErrorArgs()) : e.getMessage();
 
         return ResponseEntity
                 .status(e.getStatus())

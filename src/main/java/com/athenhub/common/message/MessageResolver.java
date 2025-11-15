@@ -6,12 +6,12 @@ package com.athenhub.common.message;
  * <p>주로 예외 처리 또는 응답 메시지 변환 시 사용되며,
  * 국제화(i18n) 또는 커스텀 메시지 전략을 적용하는 역할을 담당한다.</p>
  *
- * <p>예시:
+ * <p>예시:</p>
  * <pre>
  *     resolve("user.not_found", "홍길동")
  *     → "홍길동 사용자를 찾을 수 없습니다."
  * </pre>
- * </p>
+ *
  *
  * @author 김지원
  * @since 0.2.0
