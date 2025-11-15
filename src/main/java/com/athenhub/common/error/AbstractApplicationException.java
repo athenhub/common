@@ -1,6 +1,5 @@
 package com.athenhub.common.error;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatusCode;
 
 /**
@@ -22,7 +21,6 @@ import org.springframework.http.HttpStatusCode;
  * @author 김지원
  * @since 1.0
  */
-@Getter
 public abstract class AbstractApplicationException extends RuntimeException {
 
     /**
@@ -109,4 +107,9 @@ public abstract class AbstractApplicationException extends RuntimeException {
     public String getCode() {
         return errorCode.getCode();
     }
+
+    public Object[] getErrorArgs() {
+        return errorArgs;
+    }
+
 }
