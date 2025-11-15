@@ -3,15 +3,19 @@ name: Publish to GitHub Packages
 on:
   push:
     branches:
-      - main  # main 브랜치에서만 실행
+      - main
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
 
 permissions:
   contents: read
-  packages: write  # 패키지 배포 권한 필요
+  packages: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.head_commit.message, 'DOCS') }}
 
     steps:
       - name: Checkout repository
