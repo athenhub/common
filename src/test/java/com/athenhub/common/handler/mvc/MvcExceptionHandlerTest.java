@@ -18,11 +18,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ContextConfiguration(classes = {MvcExceptionHandler.class,
+@ContextConfiguration(classes = {
+        MvcExceptionHandler.class,
         TestController.class
 })
 @WebMvcTest
-class MvcExceptionHandlerTest {
+public class MvcExceptionHandlerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -31,7 +32,7 @@ class MvcExceptionHandlerTest {
     private MessageResolver messageResolver;
 
     @Test
-    @DisplayName("[GET] /test/app-ex - ApplicationException 발생 시 404 NOT_FOUND 반환")
+    @DisplayName("ApplicationException 발생 — ErrorCode에 정의한 status, messageResolve에 의해 변환된 메세지 반환")
     void handleApplicationException() throws Exception {
         // given
         String code = "NOT_FOUND";
@@ -47,7 +48,7 @@ class MvcExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("[GET] /test/app-ex-custom - ApplicationException + 커스텀 메시지 사용 시 404 NOT_FOUND 반환")
+    @DisplayName("ApplicationException(customMessage) 발생 - ErrorCode에 정의한 status, customMessage 반환")
     void handleApplicationException_WithCustomMessage() throws Exception {
         // given
         String code = "NOT_FOUND";
@@ -61,7 +62,7 @@ class MvcExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("[POST] /test/invalid-request-body - 요청 데이터 검증 실패 시 400 VALIDATION_ERROR 반환")
+    @DisplayName("JSON Body 검증 실패 — 400 VALIDATION_ERROR 반환")
     void handleMethodArgumentNotValidException() throws Exception {
         // given
         String code = "VALIDATION_ERROR";
@@ -86,7 +87,7 @@ class MvcExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("[GET] /test/invalid-path-variable/{id} - 요청 데이터 검증 실패 시 400 VALIDATION_ERROR 반환")
+    @DisplayName("PathVariable 검증 실패 — 400 VALIDATION_ERROR 반환")
     void handleHandlerMethodValidationException_WithInvalidPathVariable() throws Exception {
         // given
         String code = "VALIDATION_ERROR";
@@ -101,7 +102,7 @@ class MvcExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("[GET] /test/invalid-request-parm?id= - 요청 데이터 검증 실패 시 400 VALIDATION_ERROR 반환")
+    @DisplayName("RequestParam 검증 실패 — 400 VALIDATION_ERROR 반환")
     void handleHandlerMethodValidationException_WithInvalidRequestParam() throws Exception {
         // given
         String code = "VALIDATION_ERROR";
@@ -118,7 +119,7 @@ class MvcExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("[GET] /test/ex - 알 수 없는 예외 발생 시 500 INTERNAL_SERVER_ERROR 반환")
+    @DisplayName("알 수 없는 예외 발생 — 500 INTERNAL_SERVER_ERROR 반환")
     void handleAllUncaughtException() throws Exception {
         //given
         String code = "INTERNAL_SERVER_ERROR";
@@ -134,7 +135,7 @@ class MvcExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("405 MethodNotAllowed 처리: GET → POST 전용 엔드포인트 호출")
+    @DisplayName("지원되지 않는 HTTP Method — 405 METHOD_NOT_ALLOWED 반환")
     void handleMethodNotAllowed() throws Exception {
         // given
         given(messageResolver.resolve(GlobalErrorCode.METHOD_NOT_ALLOWED.getCode(), "POST"))
@@ -148,7 +149,7 @@ class MvcExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("400 JSON Parse Error : 잘못된 JSON 전달")
+    @DisplayName("JSON Parse 오류 — 400 INVALID_JSON 반환")
     void handleJsonParse() throws Exception {
         // given
         String code = "INVALID_JSON";
@@ -166,7 +167,7 @@ class MvcExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("400 TypeMismatch : PathVariable 타입 불일치(Long ← 문자열)")
+    @DisplayName("타입 불일치(TypeMismatch) — 400 TYPE_MISMATCH 반환")
     void handleTypeMismatch() throws Exception {
         // given
         String code = "TYPE_MISMATCH";
