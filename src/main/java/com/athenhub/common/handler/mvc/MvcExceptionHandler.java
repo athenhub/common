@@ -2,6 +2,7 @@ package com.athenhub.common.handler.mvc;
 
 
 import com.athenhub.common.error.*;
+import com.athenhub.common.handler.mvc.utils.ValidationErrorParser;
 import com.athenhub.common.message.MessageResolver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * MVC 환경에서 발생하는 예외를 공통으로 처리하는 글로벌 예외 처리기.
@@ -72,7 +73,7 @@ public class MvcExceptionHandler {
      */
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse<List<FieldError>>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        List<FieldError> errors = extractValidationErrors(e);
+        List<FieldError> errors = ValidationErrorParser.from(e);
 
         ErrorCode errorCode = GlobalErrorCode.VALIDATION_ERROR;
 
@@ -82,6 +83,42 @@ public class MvcExceptionHandler {
                         messageResolver.resolve(errorCode.getCode()),
                         errors)
                 );
+    }
+
+    /**
+     * 메서드 파라미터(@RequestParam, @PathVariable 등) 검증 실패 시 발생하는 예외를 처리한다.
+     *
+     * <p>Spring 6부터는 메서드 파라미터 수준의 검증이 강화되었으며,
+     * 해당 검증이 실패할 경우 {@link HandlerMethodValidationException} 이 발생한다.</p>
+     *
+     * <p>이 예외는 다음과 같은 경우에 발생한다:</p>
+     * <ul>
+     *     <li>@RequestParam 값이 Bean Validation 규칙을 위반한 경우</li>
+     *     <li>@PathVariable 값이 제약 조건을 만족하지 않는 경우</li>
+     *     <li>@RequestHeader 등 메서드 인자 검증이 실패한 경우</li>
+     * </ul>
+     *
+     * <p>
+     * 본 메서드는 이 정보를 {@link FieldError} 리스트로 변환해
+     * 클라이언트에게 일관된 검증 오류 응답을 제공한다.
+     * </p>
+     *
+     * @param e HandlerMethodValidationException
+     * @return {@code ErrorResponse<List<FieldError>>} 형태의 HTTP 400 응답
+     */
+    @ExceptionHandler(value = HandlerMethodValidationException.class)
+    public ResponseEntity<ErrorResponse<List<FieldError>>> handleHandlerMethodValidationException(HandlerMethodValidationException e) {
+        List<FieldError> errors = ValidationErrorParser.from(e);
+
+        ErrorCode errorCode = GlobalErrorCode.VALIDATION_ERROR;
+
+        return ResponseEntity
+                .status(errorCode.getStatus())
+                .body(ErrorResponse.of(errorCode.getCode(),
+                        messageResolver.resolve(errorCode.getCode()),
+                        errors)
+                );
+
     }
 
     /**
@@ -104,21 +141,5 @@ public class MvcExceptionHandler {
                         messageResolver.resolve(errorCode.getCode()))
                 );
     }
-
-    /**
-     * Bean Validation 오류 목록을 FieldError 리스트로 변환한다.
-     *
-     * @param e MethodArgumentNotValidException
-     * @return 변환된 FieldError 리스트
-     */
-    private List<FieldError> extractValidationErrors(MethodArgumentNotValidException e) {
-        return Stream.concat(
-                e.getBindingResult().getFieldErrors().stream()
-                        .map(it -> FieldError.of(it.getField(), it.getRejectedValue(), it.getDefaultMessage())),
-                e.getBindingResult().getGlobalErrors().stream()
-                        .map(it -> FieldError.global(it.getDefaultMessage()))
-        ).toList();
-    }
-
 }
 
