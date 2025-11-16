@@ -1,12 +1,7 @@
 package com.athenhub.common.handler.mvc;
 
-import com.athenhub.common.error.AbstractApplicationException;
-import com.athenhub.common.error.ErrorCode;
 import com.athenhub.common.error.GlobalErrorCode;
 import com.athenhub.common.message.MessageResolver;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.*;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -25,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ContextConfiguration(classes = {MvcExceptionHandler.class,
-        MvcExceptionHandlerTest.TestController.class
+        TestController.class
 })
 @WebMvcTest
 class MvcExceptionHandlerTest {
@@ -139,56 +133,53 @@ class MvcExceptionHandlerTest {
                 .andExpect(jsonPath("$.message").value(message));
     }
 
-    @RestController
-    @RequestMapping("/test")
-    static class TestController {
-        @GetMapping("/app-ex")
-        public void throwAppException() {
-            throw new TestApplicationException(GlobalErrorCode.NOT_FOUND);
-        }
+    @Test
+    @DisplayName("405 MethodNotAllowed 처리: GET → POST 전용 엔드포인트 호출")
+    void handleMethodNotAllowed() throws Exception {
+        // given
+        given(messageResolver.resolve(GlobalErrorCode.METHOD_NOT_ALLOWED.getCode(), "POST"))
+                .willReturn("지원되지 않는 메서드입니다. 허용: POST");
 
-        @GetMapping("/app-ex-custom")
-        public void throwAppExceptionWithCustomExceptionMessage() {
-            throw new TestApplicationException(GlobalErrorCode.NOT_FOUND, "MessageResolver를 사용하지 않은 커스텀 메세지");
-        }
-
-        @PostMapping("/invalid-request-body")
-        public void throwInvalidRequestBodyException(@Valid @RequestBody PersonRequest request) {
-
-        }
-
-        @GetMapping("/invalid-path-variable/{id}")
-        public void throwInvalidVariableException(@Valid @NotBlank @PathVariable(name = "id") String id) {
-
-        }
-
-        @GetMapping("/invalid-request-parm")
-        public void throwInvalidParamException(@Valid @NotBlank @RequestParam(name = "id") String id) {
-
-        }
-
-        @GetMapping("/ex")
-        public void throwException() {
-            throw new RuntimeException("boom");
-        }
+        // when & then
+        mockMvc.perform(get("/test/invalid-method"))
+                .andExpect(status().isMethodNotAllowed())
+                .andExpect(jsonPath("$.code").value("METHOD_NOT_ALLOWED"))
+                .andExpect(jsonPath("$.message").value("지원되지 않는 메서드입니다. 허용: POST"));
     }
 
-    static class TestApplicationException extends AbstractApplicationException {
+    @Test
+    @DisplayName("400 JSON Parse Error : 잘못된 JSON 전달")
+    void handleJsonParse() throws Exception {
+        // given
+        String code = "INVALID_JSON";
+        String message = "JSON 파싱 오류";
+        given(messageResolver.resolve(code))
+                .willReturn(message);
 
-        public TestApplicationException(ErrorCode errorCode, Object... errorArgs) {
-            super(errorCode, errorArgs);
-        }
-
-        public TestApplicationException(ErrorCode errorCode, String message, Object... errorArgs) {
-            super(errorCode, message, errorArgs);
-        }
+        // when & then
+        mockMvc.perform(post("/test/invalid-json")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ invalid json }")) // 파싱 불가능 JSON
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(code))
+                .andExpect(jsonPath("$.message").value(message));
     }
 
-    static class PersonRequest {
-        @NotBlank
-        String name;
-        @Min(1)
-        int age;
+    @Test
+    @DisplayName("400 TypeMismatch : PathVariable 타입 불일치(Long ← 문자열)")
+    void handleTypeMismatch() throws Exception {
+        // given
+        String code = "TYPE_MISMATCH";
+        String message = "파라미터 id의 값 abc는 올바르지 않습니다.";
+        given(messageResolver.resolve(GlobalErrorCode.TYPE_MISMATCH.getCode(), "id", "abc"))
+                .willReturn(message);
+
+        // when & then
+        mockMvc.perform(get("/test/mismatch/abc")) // Long → abc 변환 실패
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(code))
+                .andExpect(jsonPath("$.message").value(message));
     }
+
 
 }

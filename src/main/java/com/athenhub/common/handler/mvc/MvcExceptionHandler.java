@@ -7,12 +7,16 @@ import com.athenhub.common.message.MessageResolver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * MVC 환경에서 발생하는 예외를 공통으로 처리하는 글로벌 예외 처리기.
@@ -119,6 +123,75 @@ public class MvcExceptionHandler {
                         errors)
                 );
 
+    }
+
+    /**
+     * 지원되지 않는 HTTP 메서드(405 Method Not Allowed)에 대한 처리기.
+     *
+     * <p>Spring MVC는 컨트롤러에서 허용되지 않은 HTTP 메서드로 요청이 들어올 경우
+     * {@link HttpRequestMethodNotSupportedException} 을 발생시킨다.</p>
+     *
+     * <p>이 핸들러는 예외로부터 지원되는 메서드 목록을 추출하여
+     * 메시지 템플릿에 삽입한 후, 글로벌 에러 코드 {@code METHOD_NOT_ALLOWED}와 함께
+     * 표준 {@link ErrorResponse} 형태로 변환한다.</p>
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse<Void>> handleMethodNotAllowed(HttpRequestMethodNotSupportedException e) {
+        ErrorCode errorCode = GlobalErrorCode.METHOD_NOT_ALLOWED;
+        String message = messageResolver.resolve(errorCode.getCode(),
+                String.join(", ", Objects.requireNonNull(e.getSupportedMethods()))
+        );
+
+        return ResponseEntity
+                .status(errorCode.getStatus())
+                .body(ErrorResponse.of(errorCode.getCode(),
+                        message
+                ));
+    }
+
+    /**
+     * 요청 본문(JSON)을 읽을 수 없을 때 발생하는 예외 처리기.
+     *
+     * <p>요청 JSON 형식 오류, 누락된 body, 타입 불일치 등으로 인해
+     * {@link HttpMessageNotReadableException}이 발생할 수 있다.</p>
+     *
+     * <p>전역 에러 코드 {@code INVALID_JSON}에 매핑하여
+     * 메시지 리졸버를 통해 사용자 친화적 문구로 변환한 뒤
+     * 표준 ErrorResponse 형태로 감싼다.</p>
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse<Void>> handleJsonParse(HttpMessageNotReadableException e) {
+        ErrorCode errorCode = GlobalErrorCode.INVALID_JSON;
+
+
+        return ResponseEntity
+                .status(errorCode.getStatus())
+                .body(ErrorResponse.of(
+                        errorCode.getCode(),
+                        messageResolver.resolve(errorCode.getCode())
+                ));
+    }
+
+    /**
+     * 파라미터 타입 변환 실패(TypeMismatch) 예외 처리기.
+     *
+     * <p>예: "/users?id=abc" 요청 시 id(Long)가 "abc"로 변환될 수 없어
+     * {@link MethodArgumentTypeMismatchException}이 발생한다.</p>
+     *
+     * <p>전역 에러 코드 {@code TYPE_MISMATCH}에 매핑하며,
+     * 메시지 템플릿에서 {0}=파라미터명, {1}=입력값 을 치환하여 사용자 안내 메시지를 생성한다.</p>
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse<Void>> handleTypeMismatch(MethodArgumentTypeMismatchException e) {
+        ErrorCode errorCode = GlobalErrorCode.TYPE_MISMATCH;
+        ErrorResponse<Void> body = ErrorResponse.of(
+                errorCode.getCode(),
+                messageResolver.resolve(errorCode.getCode(), e.getName(), e.getValue())
+        );
+
+        return ResponseEntity
+                .status(errorCode.getStatus())
+                .body(body);
     }
 
     /**

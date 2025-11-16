@@ -71,6 +71,21 @@ public enum GlobalErrorCode implements ErrorCode {
     NOT_FOUND(HttpStatus.NOT_FOUND, "NOT_FOUND"),
 
     /**
+     * 지원되지 않는 HTTP 메서드 요청 시 반환되는 에러 코드 (405 Method Not Allowed).
+     */
+    METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "METHOD_NOT_ALLOWED"),
+
+    /**
+     * 요청 본문(JSON) 파싱 실패 또는 잘못된 형식일 때 발생하는 에러 코드 (400 Bad Request).
+     */
+    INVALID_JSON(HttpStatus.BAD_REQUEST, "INVALID_JSON"),
+
+    /**
+     * 요청 파라미터 타입 변환에 실패했을 때 발생하는 에러 코드 (400 Bad Request).
+     */
+    TYPE_MISMATCH(HttpStatus.BAD_REQUEST, "TYPE_MISMATCH"),
+
+    /**
      * 서버 내부 처리 중 예상치 못한 오류가 발생한 경우.
      */
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR");
