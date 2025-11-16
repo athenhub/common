@@ -3,6 +3,7 @@ package com.athenhub.common.autoconfig;
 import com.athenhub.common.handler.mvc.MvcExceptionHandler;
 import com.athenhub.common.message.MessageResolver;
 import com.athenhub.common.message.MessageSourceResolver;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -13,10 +14,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MvcExceptionHandlerAutoConfigurationTest {
+public class MvcExceptionHandlerAutoConfigurationTest {
 
-    private final WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
-            .withConfiguration(AutoConfigurations.of(MvcExceptionHandlerAutoConfiguration.class));
+    private WebApplicationContextRunner contextRunner;
+
+    @BeforeEach
+    void setup() {
+        contextRunner = new WebApplicationContextRunner()
+                .withConfiguration(AutoConfigurations.of(MvcExceptionHandlerAutoConfiguration.class));
+    }
 
     @Test
     @DisplayName("기본 조건 충족 시 MvcExceptionHandler & MessageResolver 자동 등록된다")
@@ -31,8 +37,7 @@ class MvcExceptionHandlerAutoConfigurationTest {
     @Test
     @DisplayName("enabled=false 이면 MvcExceptionHandler & MessageResolver 모두 등록되지 않는다")
     void disabledProperty() {
-        new WebApplicationContextRunner()
-                .withConfiguration(AutoConfigurations.of(MvcExceptionHandlerAutoConfiguration.class))
+        contextRunner
                 .withPropertyValues("athenhub.exception.mvc.enabled=false")
                 .run(context -> {
                     assertThat(context).doesNotHaveBean(MvcExceptionHandler.class);

@@ -7,7 +7,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MessageSourceResolverTest {
+public class MessageSourceResolverTest {
 
     static MessageSourceResolver resolver;
 

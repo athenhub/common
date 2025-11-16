@@ -22,7 +22,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.mock;
 
 @ExtendWith(MockitoExtension.class)
-class ValidationErrorParserTest {
+public class ValidationErrorParserTest {
 
     @Nested
     @DisplayName("from(MethodArgumentNotValidException) 테스트")
