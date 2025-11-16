@@ -41,7 +41,6 @@ import lombok.Getter;
  * }</pre>
  *
  * @param <T> details 필드에 포함될 추가 데이터의 타입
- *
  * @author 김지원
  * @since 0.2.0
  */
@@ -75,10 +74,10 @@ public class ErrorResponse<T> {
     /**
      * 추가 정보 없이 에러 응답을 생성한다.
      *
-     * @param code 에러 코드
+     * @param code    에러 코드
      * @param message 사용자 메시지
+     * @param <T>     details 타입
      * @return {@code details}가 포함되지 않은 기본 오류 응답
-     * @param <T> details 타입
      */
     public static <T> ErrorResponse<T> of(String code, String message) {
         return new ErrorResponse<>(code, message, null);
@@ -87,11 +86,11 @@ public class ErrorResponse<T> {
     /**
      * 추가 정보를 포함하여 에러 응답을 생성한다.
      *
-     * @param code 에러 코드
+     * @param code    에러 코드
      * @param message 사용자 메시지
      * @param details 추가 정보 객체
+     * @param <T>     details 타입
      * @return details가 포함된 오류 응답
-     * @param <T> details 타입
      */
     public static <T> ErrorResponse<T> of(String code, String message, T details) {
         return new ErrorResponse<>(code, message, details);
