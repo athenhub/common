@@ -6,7 +6,7 @@ import com.athenhub.common.error.GlobalErrorCode;
 import com.athenhub.common.message.MessageResolver;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -56,23 +57,22 @@ class MvcExceptionHandlerTest {
     void getShouldReturnNotFoundWithCustomMessageWhenApplicationExceptionWithArgumentsThrown() throws Exception {
         // given
         String code = "NOT_FOUND";
-        String resolvedMessage = "회원을 찾을 수 없습니다.";
+        String customMessage = "MessageResolver를 사용하지 않은 커스텀 메세지";
 
         // when & then
         mockMvc.perform(get("/test/app-ex-custom"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code").value(code))
-                .andExpect(jsonPath("$.message").value(resolvedMessage));
+                .andExpect(jsonPath("$.message").value(customMessage));
     }
 
     @Test
-    @DisplayName("[POST] /test/valid-ex - 요청 데이터 검증 실패 시 400 VALIDATION_ERROR 반환")
-    void postShouldReturnValidationErrorWhenRequestIsInvalid() throws Exception {
+    @DisplayName("[POST] /test/invalid-request-body - 요청 데이터 검증 실패 시 400 VALIDATION_ERROR 반환")
+    void postShouldReturnValidationErrorWhenRequestBodyIsInvalid() throws Exception {
         // given
         String code = "VALIDATION_ERROR";
         String message = "요청 데이터가 유효하지 않습니다. 잘못된 항목을 확인해주세요.";
-        given(messageResolver.resolve(code))
-                .willReturn(message);
+        given(messageResolver.resolve(code)).willReturn(message);
         String request = """
                 {
                     "name" : "",
@@ -81,7 +81,7 @@ class MvcExceptionHandlerTest {
                 """;
 
         // when & then
-        mockMvc.perform(post("/test/valid-ex")
+        mockMvc.perform(post("/test/invalid-request-body")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request)
                 )
@@ -89,6 +89,38 @@ class MvcExceptionHandlerTest {
                 .andExpect(jsonPath("$.code").value(code))
                 .andExpect(jsonPath("$.message").value(message))
                 .andExpect(jsonPath("$.details").isArray());
+    }
+
+    @Test
+    @DisplayName("[GET] /test/invalid-path-variable/{id} - 요청 데이터 검증 실패 시 400 VALIDATION_ERROR 반환")
+    void getShouldReturnValidationErrorWhenPathVariableIsBlank() throws Exception {
+        // given
+        String code = "VALIDATION_ERROR";
+        String message = "요청 데이터가 유효하지 않습니다. 잘못된 항목을 확인해주세요.";
+        given(messageResolver.resolve(code)).willReturn(message);
+        // when & then
+        mockMvc.perform(get("/test/invalid-path-variable/ "))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(code))
+                .andExpect(jsonPath("$.message").value(message))
+                .andExpect(jsonPath("$.details").isArray());
+    }
+
+    @Test
+    @DisplayName("[GET] /test/invalid-request-parm?id= - 요청 데이터 검증 실패 시 400 VALIDATION_ERROR 반환")
+    void getShouldReturnValidationErrorWhenRequestParamIsBlank() throws Exception {
+        // given
+        String code = "VALIDATION_ERROR";
+        String message = "요청 데이터가 유효하지 않습니다. 잘못된 항목을 확인해주세요.";
+        given(messageResolver.resolve(code)).willReturn(message);
+        // when & then
+        mockMvc.perform(get("/test/invalid-request-parm")
+                        .param("id", ""))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(code))
+                .andExpect(jsonPath("$.message").value(message))
+                .andExpect(jsonPath("$.details").isArray())
+                .andDo(print());
     }
 
     @Test
@@ -117,11 +149,22 @@ class MvcExceptionHandlerTest {
 
         @GetMapping("/app-ex-custom")
         public void throwAppExceptionWithCustomExceptionMessage() {
-            throw new TestApplicationException(GlobalErrorCode.NOT_FOUND, "회원을 찾을 수 없습니다.");
+            throw new TestApplicationException(GlobalErrorCode.NOT_FOUND, "MessageResolver를 사용하지 않은 커스텀 메세지");
         }
 
-        @PostMapping("/valid-ex")
-        public void throwValidException(@Valid @RequestBody PersonRequest request) {
+        @PostMapping("/invalid-request-body")
+        public void throwInvalidRequestBodyException(@Valid @RequestBody PersonRequest request) {
+
+        }
+
+        @GetMapping("/invalid-path-variable/{id}")
+        public void throwInvalidVariableException(@Valid @NotBlank @PathVariable(name = "id") String id) {
+
+        }
+
+        @GetMapping("/invalid-request-parm")
+        public void throwInvalidParamException(@Valid @NotBlank @RequestParam(name = "id") String id) {
+
         }
 
         @GetMapping("/ex")
@@ -142,7 +185,7 @@ class MvcExceptionHandlerTest {
     }
 
     static class PersonRequest {
-        @NotEmpty
+        @NotBlank
         String name;
         @Min(1)
         int age;

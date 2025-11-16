@@ -12,7 +12,6 @@ package com.athenhub.common.message;
  *     → "홍길동 사용자를 찾을 수 없습니다."
  * </pre>
  *
- *
  * @author 김지원
  * @since 0.2.0
  */

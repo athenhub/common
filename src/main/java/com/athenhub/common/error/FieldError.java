@@ -61,8 +61,8 @@ public class FieldError {
     /**
      * 지정된 필드에 대한 오류를 생성한다.
      *
-     * @param field 오류가 발생한 필드명
-     * @param value 사용자가 입력한 값
+     * @param field  오류가 발생한 필드명
+     * @param value  사용자가 입력한 값
      * @param reason 오류 발생 이유 또는 메시지
      * @return 생성된 {@link FieldError}
      */
