@@ -1,4 +1,26 @@
-# 📦 athenhub/common 라이브러리 설정 가이드
+# 📦 athenhub/common 라이브러리
+
+# 💡0.2.1 버전 기능
+
+## GlobalErrorHandler
+
+- MvcExceptionHandler
+    - Spring MVC 환경에서 발생하는 예외를 공통 형태로 응답
+    - Validation, 비즈니스 예외 등 다양한 예외를 구조화된 JSON 형태로 반환
+    - 사용자가 직접 @RestControllerAdvice 또는 MvcExceptionHandler 빈을 등록하면 자동 생성되지 않음
+    - `athenhub.exception.mvc.enabled=true` 로 on/off 가능(default=true)
+    - `AbstractApplicationException` 을 상속 받아 사용자 예외 정의 가능
+
+- MessageResolver (MessageSourceResolver)
+    - MvcExceptionHandler 에서 code 변환시 MessageResolver 를 사용
+    - MessageSource 기반으로 메시지 코드 → 사람이 읽을 수 있는 메시지 변환
+    - `resources/messages.properties` 에 변환하고 싶은 메세지 추가 가능
+        ```properties
+        user.not.found=회원을 찾을 수 없습니다.
+        ```
+    - 현재는 Locale은 한글만 적용, 추후 국제화 고려
+
+# ⚙️ athenhub/common 라이브러리 설정 가이드
 
 본 문서는 `athenhub/common` 라이브러리를 Gradle 기반 프로젝트에서 설정 방법을 정리한 가이드입니다.  
 GitHub Packages 저장소를 활용하므로, 필요한 GitHub Token 발급 및 gradle.properties 설정 방법도 함께 안내합니다.
