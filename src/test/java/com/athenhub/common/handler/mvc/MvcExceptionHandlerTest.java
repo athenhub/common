@@ -32,7 +32,7 @@ class MvcExceptionHandlerTest {
 
     @Test
     @DisplayName("[GET] /test/app-ex - ApplicationException 발생 시 404 NOT_FOUND 반환")
-    void getShouldReturnNotFoundWhenApplicationExceptionThrown() throws Exception {
+    void handleApplicationException() throws Exception {
         // given
         String code = "NOT_FOUND";
         String message = "요청하신 리소스를 찾을 수 없습니다.";
@@ -48,7 +48,7 @@ class MvcExceptionHandlerTest {
 
     @Test
     @DisplayName("[GET] /test/app-ex-custom - ApplicationException + 커스텀 메시지 사용 시 404 NOT_FOUND 반환")
-    void getShouldReturnNotFoundWithCustomMessageWhenApplicationExceptionWithArgumentsThrown() throws Exception {
+    void handleApplicationException_WithCustomMessage() throws Exception {
         // given
         String code = "NOT_FOUND";
         String customMessage = "MessageResolver를 사용하지 않은 커스텀 메세지";
@@ -62,7 +62,7 @@ class MvcExceptionHandlerTest {
 
     @Test
     @DisplayName("[POST] /test/invalid-request-body - 요청 데이터 검증 실패 시 400 VALIDATION_ERROR 반환")
-    void postShouldReturnValidationErrorWhenRequestBodyIsInvalid() throws Exception {
+    void handleMethodArgumentNotValidException() throws Exception {
         // given
         String code = "VALIDATION_ERROR";
         String message = "요청 데이터가 유효하지 않습니다. 잘못된 항목을 확인해주세요.";
@@ -87,7 +87,7 @@ class MvcExceptionHandlerTest {
 
     @Test
     @DisplayName("[GET] /test/invalid-path-variable/{id} - 요청 데이터 검증 실패 시 400 VALIDATION_ERROR 반환")
-    void getShouldReturnValidationErrorWhenPathVariableIsBlank() throws Exception {
+    void handleHandlerMethodValidationException_WithInvalidPathVariable() throws Exception {
         // given
         String code = "VALIDATION_ERROR";
         String message = "요청 데이터가 유효하지 않습니다. 잘못된 항목을 확인해주세요.";
@@ -102,7 +102,7 @@ class MvcExceptionHandlerTest {
 
     @Test
     @DisplayName("[GET] /test/invalid-request-parm?id= - 요청 데이터 검증 실패 시 400 VALIDATION_ERROR 반환")
-    void getShouldReturnValidationErrorWhenRequestParamIsBlank() throws Exception {
+    void handleHandlerMethodValidationException_WithInvalidRequestParam() throws Exception {
         // given
         String code = "VALIDATION_ERROR";
         String message = "요청 데이터가 유효하지 않습니다. 잘못된 항목을 확인해주세요.";
@@ -119,7 +119,7 @@ class MvcExceptionHandlerTest {
 
     @Test
     @DisplayName("[GET] /test/ex - 알 수 없는 예외 발생 시 500 INTERNAL_SERVER_ERROR 반환")
-    void getShouldReturnInternalServerErrorWhenUnknownExceptionThrown() throws Exception {
+    void handleAllUncaughtException() throws Exception {
         //given
         String code = "INTERNAL_SERVER_ERROR";
         String message = "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
