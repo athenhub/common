@@ -1,4 +1,4 @@
-package com.athenhub.commonmvc.utils;
+package com.athenhub.commonmvc.logging;
 
 import io.micrometer.common.util.StringUtils;
 import java.util.UUID;

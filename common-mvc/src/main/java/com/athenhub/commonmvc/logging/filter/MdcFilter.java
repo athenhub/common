@@ -1,6 +1,6 @@
-package com.athenhub.commonmvc.filter;
+package com.athenhub.commonmvc.logging.filter;
 
-import com.athenhub.commonmvc.utils.MdcUtils;
+import com.athenhub.commonmvc.logging.MdcUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 import org.slf4j.MDC;
-import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
@@ -23,7 +23,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * @author 김형섭
  * @since 0.3.0
  */
-@Component
 public class MdcFilter extends OncePerRequestFilter {
 
   /**
@@ -56,7 +55,7 @@ public class MdcFilter extends OncePerRequestFilter {
    * @return 인증된 사용자명 또는 기본값 "SYSTEM"
    */
   private String getUsername(HttpServletRequest request) {
-    String username = request.getHeader("X-User-Name");
-    return username == null || username.isBlank() ? "SYSTEM" : username;
+    String username = request.getHeader("X-Username");
+    return StringUtils.hasText(username) ? username : "SYSTEM";
   }
 }

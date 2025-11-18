@@ -1,6 +1,5 @@
 package com.athenhub.commonmvc.logging;
 
-import com.athenhub.commonmvc.utils.MdcUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
