@@ -2,8 +2,8 @@ package com.athenhub.commonmvc.autoconfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.athenhub.commonmvc.filter.MdcFilter;
 import com.athenhub.commonmvc.logging.LoggingAspect;
+import com.athenhub.commonmvc.logging.filter.MdcFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

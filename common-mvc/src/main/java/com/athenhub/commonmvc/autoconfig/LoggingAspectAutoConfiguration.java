@@ -1,8 +1,8 @@
 package com.athenhub.commonmvc.autoconfig;
 
-import com.athenhub.commonmvc.filter.MdcFilter;
 import com.athenhub.commonmvc.logging.LogManager;
 import com.athenhub.commonmvc.logging.LoggingAspect;
+import com.athenhub.commonmvc.logging.filter.MdcFilter;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

@@ -116,6 +116,8 @@ configure([project(":common-mvc")]) {
     apply plugin: 'io.spring.dependency-management'
 
     dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-security'
+        testImplementation 'org.springframework.security:spring-security-test'
         implementation(platform("org.springframework.boot:spring-boot-dependencies:3.5.7"))
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
