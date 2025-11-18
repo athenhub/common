@@ -202,6 +202,23 @@ public class MvcExceptionHandlerTest {
         .andExpect(jsonPath("$.message").value(message));
   }
 
+  @Test
+  @DisplayName("존재하지 않는 경로(URL) 요청 — 404 NO_RESOURCE_FOUND 반환")
+  @WithMockUser
+  void handlerNoResourceFoundException() throws Exception {
+    // given
+    String code = "NO_RESOURCE_FOUND";
+    String message = "요청하신 리소스를 찾을 수 없습니다.";
+    given(messageResolver.resolve(GlobalErrorCode.NO_RESOURCE_FOUND.getCode())).willReturn(message);
+
+    // when & then
+    mockMvc
+        .perform(get("/test/non-existent-url"))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.code").value(code))
+        .andExpect(jsonPath("$.message").value(message));
+  }
+
   @TestConfiguration
   static class TestSecurityConfig {
     @Bean
