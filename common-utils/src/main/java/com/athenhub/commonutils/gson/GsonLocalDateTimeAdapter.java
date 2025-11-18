@@ -1,4 +1,4 @@
-package com.athenhub.commonmvc.utils;
+package com.athenhub.commonutils.gson;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

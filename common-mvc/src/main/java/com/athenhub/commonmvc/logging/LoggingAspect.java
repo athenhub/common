@@ -1,6 +1,6 @@
 package com.athenhub.commonmvc.logging;
 
-import com.athenhub.commonmvc.utils.GsonUtils;
+import com.athenhub.commonutils.gson.GsonUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;

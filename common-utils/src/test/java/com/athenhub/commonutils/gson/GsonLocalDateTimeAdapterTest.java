@@ -1,4 +1,4 @@
-package com.athenhub.commonmvc.utils;
+package com.athenhub.commonutils.gson;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

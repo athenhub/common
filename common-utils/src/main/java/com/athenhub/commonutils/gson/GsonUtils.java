@@ -1,4 +1,4 @@
-package com.athenhub.commonmvc.utils;
+package com.athenhub.commonutils.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
