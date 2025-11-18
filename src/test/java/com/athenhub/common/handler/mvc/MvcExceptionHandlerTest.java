@@ -13,13 +13,21 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 /** MvcExceptionHandler Test. */
 @ContextConfiguration(classes = {MvcExceptionHandler.class, TestController.class})
+@Import(MvcExceptionHandlerTest.TestSecurityConfig.class)
 @WebMvcTest
 public class MvcExceptionHandlerTest {
 
@@ -29,6 +37,7 @@ public class MvcExceptionHandlerTest {
 
   @Test
   @DisplayName("ApplicationException 발생 — ErrorCode에 정의한 status, messageResolve에 의해 변환된 메세지 반환")
+  @WithMockUser
   void handleApplicationException() throws Exception {
     // given
     String code = "NOT_FOUND";
@@ -45,6 +54,7 @@ public class MvcExceptionHandlerTest {
 
   @Test
   @DisplayName("ApplicationException(customMessage) 발생 - ErrorCode에 정의한 status, customMessage 반환")
+  @WithMockUser
   void handleApplicationExceptionWithCustomMessage() throws Exception {
     // given
     String code = "NOT_FOUND";
@@ -60,6 +70,7 @@ public class MvcExceptionHandlerTest {
 
   @Test
   @DisplayName("JSON Body 검증 실패 — 400 VALIDATION_ERROR 반환")
+  @WithMockUser
   void handleMethodArgumentNotValidException() throws Exception {
     // given
     String code = "VALIDATION_ERROR";
@@ -87,6 +98,7 @@ public class MvcExceptionHandlerTest {
 
   @Test
   @DisplayName("PathVariable 검증 실패 — 400 VALIDATION_ERROR 반환")
+  @WithMockUser
   void handleHandlerMethodValidationExceptionWithInvalidPathVariable() throws Exception {
     // given
     String code = "VALIDATION_ERROR";
@@ -103,6 +115,7 @@ public class MvcExceptionHandlerTest {
 
   @Test
   @DisplayName("RequestParam 검증 실패 — 400 VALIDATION_ERROR 반환")
+  @WithMockUser
   void handleHandlerMethodValidationExceptionWithInvalidRequestParam() throws Exception {
     // given
     String code = "VALIDATION_ERROR";
@@ -120,6 +133,7 @@ public class MvcExceptionHandlerTest {
 
   @Test
   @DisplayName("알 수 없는 예외 발생 — 500 INTERNAL_SERVER_ERROR 반환")
+  @WithMockUser
   void handleAllUncaughtException() throws Exception {
     // given
     String code = "INTERNAL_SERVER_ERROR";
@@ -136,6 +150,7 @@ public class MvcExceptionHandlerTest {
 
   @Test
   @DisplayName("지원되지 않는 HTTP Method — 405 METHOD_NOT_ALLOWED 반환")
+  @WithMockUser
   void handleMethodNotAllowed() throws Exception {
     // given
     given(messageResolver.resolve(GlobalErrorCode.METHOD_NOT_ALLOWED.getCode(), "POST"))
@@ -151,6 +166,7 @@ public class MvcExceptionHandlerTest {
 
   @Test
   @DisplayName("JSON Parse 오류 — 400 INVALID_JSON 반환")
+  @WithMockUser
   void handleJsonParse() throws Exception {
     // given
     String code = "INVALID_JSON";
@@ -170,6 +186,7 @@ public class MvcExceptionHandlerTest {
 
   @Test
   @DisplayName("타입 불일치(TypeMismatch) — 400 TYPE_MISMATCH 반환")
+  @WithMockUser
   void handleTypeMismatch() throws Exception {
     // given
     String code = "TYPE_MISMATCH";
@@ -183,5 +200,15 @@ public class MvcExceptionHandlerTest {
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.code").value(code))
         .andExpect(jsonPath("$.message").value(message));
+  }
+
+  @TestConfiguration
+  static class TestSecurityConfig {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+      http.csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화
+          .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()); // 모든 요청 허용
+      return http.build();
+    }
   }
 }
