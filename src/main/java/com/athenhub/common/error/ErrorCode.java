@@ -1,7 +1,5 @@
 package com.athenhub.common.error;
 
-import org.springframework.http.HttpStatusCode;
-
 /**
  * 애플리케이션 전역에서 사용되는 공통 에러 코드를 정의하는 인터페이스.
  *
@@ -15,13 +13,13 @@ import org.springframework.http.HttpStatusCode;
  *     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND"),
  *     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "INVALID_PASSWORD");
  *
- *     private final HttpStatusCode status;
+ *     private final int status;
  *     private final String code;
  *
  *     // 생성자 생략
  *
  *     @Override
- *     public HttpStatusCode getStatus() { return status; }
+ *     public int getStatus() { return status; }
  *
  *     @Override
  *     public String getCode() { return code; }
@@ -44,7 +42,7 @@ public interface ErrorCode {
    *
    * @return HTTP 상태 코드
    */
-  HttpStatusCode getStatus();
+  int getStatus();
 
   /**
    * 에러를 식별하는 문자열 코드를 반환한다.

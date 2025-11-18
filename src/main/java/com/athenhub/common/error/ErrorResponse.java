@@ -1,6 +1,5 @@
 package com.athenhub.common.error;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 
 /**
@@ -13,8 +12,6 @@ import lombok.Getter;
  *   <li>{@code message}: 최종 사용자에게 전달할 메시지
  *   <li>{@code details}: 선택적 추가 정보 (검증 오류 목록 등)
  * </ul>
- *
- * <p>{@link JsonInclude @JsonInclude} 설정을 통해 {@code details}가 {@code null}이면 JSON 응답에서 제외된다.
  *
  * <p>일반적인 사용 예:
  *
@@ -43,7 +40,6 @@ import lombok.Getter;
  * @since 0.2.0
  */
 @Getter
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse<T> {
 
   /**

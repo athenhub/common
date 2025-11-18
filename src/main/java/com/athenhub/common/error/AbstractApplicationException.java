@@ -87,7 +87,7 @@ public abstract class AbstractApplicationException extends RuntimeException {
    *
    * @return {@link HttpStatusCode} HTTP 상태
    */
-  public HttpStatusCode getStatus() {
+  public int getStatus() {
     return errorCode.getStatus();
   }
 

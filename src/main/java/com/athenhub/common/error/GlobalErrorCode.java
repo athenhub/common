@@ -2,8 +2,6 @@ package com.athenhub.common.error;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 
 /**
  * 애플리케이션 공통 범위에서 발생하는 표준 에러 코드를 정의하는 열거형(enum).
@@ -43,34 +41,34 @@ import org.springframework.http.HttpStatusCode;
 public enum GlobalErrorCode implements ErrorCode {
 
   /** 잘못된 요청 형식 또는 유효하지 않은 입력으로 인해 요청을 처리할 수 없는 경우. 예: JSON 파싱 오류, 필수 파라미터 누락 */
-  BAD_REQUEST(HttpStatus.BAD_REQUEST, "BAD_REQUEST"),
+  BAD_REQUEST(400, "BAD_REQUEST"),
 
   /** 입력 값 검증(Validation) 실패. 예: @Valid, @NotNull, @Email 등 제약조건 위반 */
-  VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR"),
-
-  /** 인증되지 않은 사용자가 보호된 리소스에 접근하려는 경우. */
-  UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED"),
-
-  /** 인증은 되었지만 리소스 접근 권한이 부족한 경우. */
-  FORBIDDEN(HttpStatus.FORBIDDEN, "FORBIDDEN"),
-
-  /** 요청한 리소스를 찾을 수 없는 경우. */
-  NOT_FOUND(HttpStatus.NOT_FOUND, "NOT_FOUND"),
-
-  /** 지원되지 않는 HTTP 메서드 요청 시 반환되는 에러 코드 (405 Method Not Allowed). */
-  METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "METHOD_NOT_ALLOWED"),
+  VALIDATION_ERROR(400, "VALIDATION_ERROR"),
 
   /** 요청 본문(JSON) 파싱 실패 또는 잘못된 형식일 때 발생하는 에러 코드 (400 Bad Request). */
-  INVALID_JSON(HttpStatus.BAD_REQUEST, "INVALID_JSON"),
+  INVALID_JSON(400, "INVALID_JSON"),
 
   /** 요청 파라미터 타입 변환에 실패했을 때 발생하는 에러 코드 (400 Bad Request). */
-  TYPE_MISMATCH(HttpStatus.BAD_REQUEST, "TYPE_MISMATCH"),
+  TYPE_MISMATCH(400, "TYPE_MISMATCH"),
+
+  /** 인증되지 않은 사용자가 보호된 리소스에 접근하려는 경우. */
+  UNAUTHORIZED(401, "UNAUTHORIZED"),
+
+  /** 인증은 되었지만 리소스 접근 권한이 부족한 경우. */
+  FORBIDDEN(403, "FORBIDDEN"),
+
+  /** 요청한 리소스를 찾을 수 없는 경우. */
+  NOT_FOUND(404, "NOT_FOUND"),
+
+  /** 지원되지 않는 HTTP 메서드 요청 시 반환되는 에러 코드 (405 Method Not Allowed). */
+  METHOD_NOT_ALLOWED(405, "METHOD_NOT_ALLOWED"),
 
   /** 서버 내부 처리 중 예상치 못한 오류가 발생한 경우. */
-  INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR");
+  INTERNAL_SERVER_ERROR(500, "INTERNAL_SERVER_ERROR");
 
   /** HTTP 상태 코드. */
-  private final HttpStatusCode status;
+  private final int status;
 
   /** 전역 에러 식별자 문자열. */
   private final String code;
