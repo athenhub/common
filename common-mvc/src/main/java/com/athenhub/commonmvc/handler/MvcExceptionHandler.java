@@ -1,8 +1,14 @@
 package com.athenhub.commonmvc.handler;
 
-import com.athenhub.commoncore.error.*;
+import com.athenhub.commoncore.error.AbstractApplicationException;
+import com.athenhub.commoncore.error.ErrorCode;
+import com.athenhub.commoncore.error.ErrorResponse;
+import com.athenhub.commoncore.error.FieldError;
+import com.athenhub.commoncore.error.GlobalErrorCode;
 import com.athenhub.commoncore.message.MessageResolver;
 import com.athenhub.commonmvc.handler.utils.ValidationErrorParser;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +19,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
-import java.util.List;
-import java.util.Objects;
 
 /**
  * MVC 환경에서 발생하는 예외를 공통으로 처리하는 글로벌 예외 처리기.

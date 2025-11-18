@@ -1,9 +1,8 @@
 package com.athenhub.commonmvc.utils;
 
 import io.micrometer.common.util.StringUtils;
-import org.slf4j.MDC;
-
 import java.util.UUID;
+import org.slf4j.MDC;
 
 /**
  * MDC (Mapped Diagnostic Context) 유틸리티 클래스.

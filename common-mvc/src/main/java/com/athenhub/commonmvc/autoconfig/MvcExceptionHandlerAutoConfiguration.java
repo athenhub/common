@@ -1,8 +1,8 @@
 package com.athenhub.commonmvc.autoconfig;
 
 import com.athenhub.commoncore.message.MessageResolver;
-import com.athenhub.commonmvc.message.MessageSourceResolver;
 import com.athenhub.commonmvc.handler.MvcExceptionHandler;
+import com.athenhub.commonmvc.message.MessageSourceResolver;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

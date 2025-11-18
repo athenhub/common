@@ -2,6 +2,7 @@ package com.athenhub.commonmvc.logging;
 
 import com.athenhub.commonmvc.utils.GsonUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -11,8 +12,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import java.net.URI;
 
 /**
  * 애플리케이션 전반의 컨트롤러 진입/종료 시점을 AOP로 로깅 처리하는 Aspect 클래스.

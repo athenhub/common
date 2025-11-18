@@ -1,10 +1,9 @@
 package com.athenhub.commonmvc.message;
 
 import com.athenhub.commoncore.message.MessageResolver;
+import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
-
-import java.util.Locale;
 
 /**
  * {@link MessageResolver}의 기본 구현체로, 스프링의 {@link MessageSource}를 사용하여 메시지 코드를 실제 문자열로 변환한다.

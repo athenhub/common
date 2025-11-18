@@ -1,7 +1,9 @@
 package com.athenhub.commonmvc.autoconfig;
 
-import com.athenhub.commonmvc.handler.MvcExceptionHandler;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.athenhub.commoncore.message.MessageResolver;
+import com.athenhub.commonmvc.handler.MvcExceptionHandler;
 import com.athenhub.commonmvc.message.MessageSourceResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,8 +13,6 @@ import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /** MvcExceptionHandlerAutoConfiguration Test. */
 public class MvcExceptionHandlerAutoConfigurationTest {

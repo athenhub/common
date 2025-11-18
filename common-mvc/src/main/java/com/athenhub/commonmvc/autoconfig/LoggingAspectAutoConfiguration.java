@@ -1,6 +1,5 @@
 package com.athenhub.commonmvc.autoconfig;
 
-
 import com.athenhub.commonmvc.filter.MdcFilter;
 import com.athenhub.commonmvc.logging.LogManager;
 import com.athenhub.commonmvc.logging.LoggingAspect;
