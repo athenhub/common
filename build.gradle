@@ -4,6 +4,9 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.7'
     id 'maven-publish'
     id 'java-library'
+
+    id 'checkstyle'
+    id 'com.diffplug.spotless' version "6.25.0"
 }
 
 group = 'com.athenhub'
@@ -100,4 +103,32 @@ publishing {
             }
         }
     }
+}
+
+checkstyle {
+    toolVersion = "12.1.2"
+    configFile = rootProject.file("config/checkstyle/checkstyle.xml")
+    showViolations = true
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.required = false
+        html.required = true
+    }
+}
+
+tasks.named("check") {
+    dependsOn "checkstyleMain", "checkstyleTest"
+}
+
+spotless {
+    java {
+        googleJavaFormat() // Google Java 스타일 강제
+        target "src/**/*.java"
+    }
+}
+
+tasks.check {
+    dependsOn "spotlessCheck"
 }
