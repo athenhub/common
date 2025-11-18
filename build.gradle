@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'com.athenhub'
-version = '0.2.1'
+version = '0.3.0'
 description = 'com.athenhub.common'
 
 
@@ -39,6 +39,11 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok:1.18.42'
     annotationProcessor 'org.projectlombok:lombok:1.18.42'
+
+    // aop
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    // gson
+    implementation 'com.google.code.gson:gson'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
