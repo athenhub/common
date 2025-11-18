@@ -57,6 +57,6 @@ public class MdcFilter extends OncePerRequestFilter {
    */
   private String getUsername(HttpServletRequest request) {
     String username = request.getHeader("X-User-Name");
-    return username.isBlank() ? "SYSTEM" : username;
+    return username == null || username.isBlank() ? "SYSTEM" : username;
   }
 }
