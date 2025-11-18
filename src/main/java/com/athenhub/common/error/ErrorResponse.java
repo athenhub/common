@@ -6,19 +6,17 @@ import lombok.Getter;
 /**
  * API 에러 응답의 표준 형태를 표현하는 클래스.
  *
- * <p>모든 예외 처리 결과는 이 객체로 변환되어 클라이언트에 반환된다.
- * 필드는 다음과 같은 의미를 가진다:</p>
+ * <p>모든 예외 처리 결과는 이 객체로 변환되어 클라이언트에 반환된다. 필드는 다음과 같은 의미를 가진다:
  *
  * <ul>
- *     <li>{@code code}: 애플리케이션 에러 코드 (예: {@code USER_NOT_FOUND})</li>
- *     <li>{@code message}: 최종 사용자에게 전달할 메시지</li>
- *     <li>{@code details}: 선택적 추가 정보 (검증 오류 목록 등)</li>
+ *   <li>{@code code}: 애플리케이션 에러 코드 (예: {@code USER_NOT_FOUND})
+ *   <li>{@code message}: 최종 사용자에게 전달할 메시지
+ *   <li>{@code details}: 선택적 추가 정보 (검증 오류 목록 등)
  * </ul>
  *
- * <p>{@link JsonInclude @JsonInclude} 설정을 통해 {@code details}가 {@code null}이면
- * JSON 응답에서 제외된다.</p>
+ * <p>{@link JsonInclude @JsonInclude} 설정을 통해 {@code details}가 {@code null}이면 JSON 응답에서 제외된다.
  *
- * <p>일반적인 사용 예:</p>
+ * <p>일반적인 사용 예:
  *
  * <pre>{@code
  * // 예외 핸들러 내부 (MvcExceptionHandler)
@@ -31,7 +29,7 @@ import lombok.Getter;
  * }
  * }</pre>
  *
- * <p>검증 오류처럼 추가 정보를 제공해야 하는 경우:</p>
+ * <p>검증 오류처럼 추가 정보를 제공해야 하는 경우:
  *
  * <pre>{@code
  * Map<String, String> errors = Map.of("email", "형식이 올바르지 않습니다.");
@@ -48,51 +46,51 @@ import lombok.Getter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse<T> {
 
-    /**
-     * 애플리케이션 에러 코드.
-     * <p>예: {@code USER_NOT_FOUND}, {@code INVALID_TOKEN}</p>
-     */
-    private final String code;
+  /**
+   * 애플리케이션 에러 코드.
+   *
+   * <p>예: {@code USER_NOT_FOUND}, {@code INVALID_TOKEN}
+   */
+  private final String code;
 
-    /**
-     * 사용자에게 전달되는 최종 메시지.
-     */
-    private final String message;
+  /** 사용자에게 전달되는 최종 메시지. */
+  private final String message;
 
-    /**
-     * 선택적으로 포함되는 추가 정보.
-     * <p>예: 필드 검증 오류 목록, 데이터 객체 등</p>
-     */
-    private final T details;
+  /**
+   * 선택적으로 포함되는 추가 정보.
+   *
+   * <p>예: 필드 검증 오류 목록, 데이터 객체 등
+   */
+  private final T details;
 
-    private ErrorResponse(String code, String message, T details) {
-        this.code = code;
-        this.message = message;
-        this.details = details;
-    }
+  private ErrorResponse(String code, String message, T details) {
+    this.code = code;
+    this.message = message;
+    this.details = details;
+  }
 
-    /**
-     * 추가 정보 없이 에러 응답을 생성한다.
-     *
-     * @param code    에러 코드
-     * @param message 사용자 메시지
-     * @param <T>     details 타입
-     * @return {@code details}가 포함되지 않은 기본 오류 응답
-     */
-    public static <T> ErrorResponse<T> of(String code, String message) {
-        return new ErrorResponse<>(code, message, null);
-    }
+  /**
+   * 추가 정보 없이 에러 응답을 생성한다.
+   *
+   * @param code 에러 코드
+   * @param message 사용자 메시지
+   * @param <T> details 타입
+   * @return {@code details}가 포함되지 않은 기본 오류 응답
+   */
+  public static <T> ErrorResponse<T> of(String code, String message) {
+    return new ErrorResponse<>(code, message, null);
+  }
 
-    /**
-     * 추가 정보를 포함하여 에러 응답을 생성한다.
-     *
-     * @param code    에러 코드
-     * @param message 사용자 메시지
-     * @param details 추가 정보 객체
-     * @param <T>     details 타입
-     * @return details가 포함된 오류 응답
-     */
-    public static <T> ErrorResponse<T> of(String code, String message, T details) {
-        return new ErrorResponse<>(code, message, details);
-    }
+  /**
+   * 추가 정보를 포함하여 에러 응답을 생성한다.
+   *
+   * @param code 에러 코드
+   * @param message 사용자 메시지
+   * @param details 추가 정보 객체
+   * @param <T> details 타입
+   * @return details가 포함된 오류 응답
+   */
+  public static <T> ErrorResponse<T> of(String code, String message, T details) {
+    return new ErrorResponse<>(code, message, details);
+  }
 }
