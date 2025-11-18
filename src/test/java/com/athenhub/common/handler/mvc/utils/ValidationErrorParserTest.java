@@ -20,7 +20,7 @@ import org.springframework.validation.method.ParameterValidationResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
-/** ValidationErrorParser Test */
+/** ValidationErrorParser Test. */
 @ExtendWith(MockitoExtension.class)
 public class ValidationErrorParserTest {
 

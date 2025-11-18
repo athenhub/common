@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
-/** MessageSourceResolver Test */
+/** MessageSourceResolver Test. */
 public class MessageSourceResolverTest {
 
   static MessageSourceResolver resolver;

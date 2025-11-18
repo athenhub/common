@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+/** MvcExceptionHandler Test. */
 @ContextConfiguration(classes = {MvcExceptionHandler.class, TestController.class})
 @WebMvcTest
 public class MvcExceptionHandlerTest {
@@ -44,7 +45,7 @@ public class MvcExceptionHandlerTest {
 
   @Test
   @DisplayName("ApplicationException(customMessage) 발생 - ErrorCode에 정의한 status, customMessage 반환")
-  void handleApplicationException_WithCustomMessage() throws Exception {
+  void handleApplicationExceptionWithCustomMessage() throws Exception {
     // given
     String code = "NOT_FOUND";
     String customMessage = "MessageResolver를 사용하지 않은 커스텀 메세지";
@@ -86,7 +87,7 @@ public class MvcExceptionHandlerTest {
 
   @Test
   @DisplayName("PathVariable 검증 실패 — 400 VALIDATION_ERROR 반환")
-  void handleHandlerMethodValidationException_WithInvalidPathVariable() throws Exception {
+  void handleHandlerMethodValidationExceptionWithInvalidPathVariable() throws Exception {
     // given
     String code = "VALIDATION_ERROR";
     String message = "요청 데이터가 유효하지 않습니다. 잘못된 항목을 확인해주세요.";
@@ -102,7 +103,7 @@ public class MvcExceptionHandlerTest {
 
   @Test
   @DisplayName("RequestParam 검증 실패 — 400 VALIDATION_ERROR 반환")
-  void handleHandlerMethodValidationException_WithInvalidRequestParam() throws Exception {
+  void handleHandlerMethodValidationExceptionWithInvalidRequestParam() throws Exception {
     // given
     String code = "VALIDATION_ERROR";
     String message = "요청 데이터가 유효하지 않습니다. 잘못된 항목을 확인해주세요.";
