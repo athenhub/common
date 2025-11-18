@@ -1,7 +1,5 @@
 package com.athenhub.commoncore.error;
 
-import com.athenhub.common.error.AbstractApplicationException;
-
 /**
  * 애플리케이션 전역에서 사용되는 공통 에러 코드를 정의하는 인터페이스.
  *

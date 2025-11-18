@@ -76,3 +76,14 @@ project(":common-core") {
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
     }
 }
+
+
+configure([project(":common-mvc")]) {
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencies {
+        implementation(platform("org.springframework.boot:spring-boot-dependencies:3.5.7"))
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+}

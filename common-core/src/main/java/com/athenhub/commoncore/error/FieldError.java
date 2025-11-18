@@ -1,6 +1,5 @@
 package com.athenhub.commoncore.error;
 
-import com.athenhub.common.error.ErrorResponse;
 import lombok.Getter;
 
 /**
