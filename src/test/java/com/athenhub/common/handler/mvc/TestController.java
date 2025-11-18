@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * 테스트 환경에서 다양한 예외 상황을 발생시키기 위한 테스트 컨트롤러.
  *

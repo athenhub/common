@@ -1,5 +1,25 @@
 # 📦 athenhub/common 라이브러리
 
+# 💡0.3.0 버전 기능
+
+- LoggingAspect.class
+    - AOP 기반의 LoggingAspect 및 MDC 필터 추가
+    - 애플리케이션 전반의 컨트롤러 진입/종료 시점을 AOP로 로깅 처리하는 Aspect 클래스
+    - RestController 내의 모든 요청에 대해 HTTP 메서드, URI, 메서드명, 파라미터, 응답 결과를 로깅
+
+e.g.
+
+```code
+2025-11-18T15:58:22.702+09:00  INFO 45009 --- [nio-8080-exec-3] com.athenhub.common.logging.LogManager   : POST /ex5 - Request ID: d5843b03-724c-498b-b797-eab2554cee55, Username: aj0123, Method: TestController.ex5 , Params: {person: Person[name=AJ, age=20]}
+2025-11-18T15:58:22.702+09:00  INFO 45009 --- [nio-8080-exec-3] c.athenhub.springboottest.TestService    : Person[name=AJ, age=20]
+2025-11-18T15:58:22.703+09:00  INFO 45009 --- [nio-8080-exec-3] com.athenhub.common.logging.LogManager   : POST /ex5 - Request ID: d5843b03-724c-498b-b797-eab2554cee55, Username: aj0123, Method: TestController.ex5, Return: "ok"
+```
+
+- GsonUtils.class
+    - JSON 변환을 위한 유틸리티 클래스
+    - 싱글톤 Gson 인스턴스를 제공
+    - LocalDateTime 직렬화/역직렬화 어댑터 등록
+
 # 💡0.2.1 버전 기능
 
 ## GlobalErrorHandler
