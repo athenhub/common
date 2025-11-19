@@ -36,9 +36,9 @@ public class MvcExceptionHandlerTest {
   @MockitoBean private MessageResolver messageResolver;
 
   @Test
-  @DisplayName("ApplicationException 발생 — ErrorCode에 정의한 status, messageResolve에 의해 변환된 메세지 반환")
+  @DisplayName("ServiceException 발생 — ErrorCode에 정의한 status, messageResolve에 의해 변환된 메세지 반환")
   @WithMockUser
-  void handleApplicationException() throws Exception {
+  void handleServiceException() throws Exception {
     // given
     String code = "NOT_FOUND";
     String message = "요청하신 리소스를 찾을 수 없습니다.";
@@ -53,9 +53,9 @@ public class MvcExceptionHandlerTest {
   }
 
   @Test
-  @DisplayName("ApplicationException(customMessage) 발생 - ErrorCode에 정의한 status, customMessage 반환")
+  @DisplayName("ServiceException(customMessage) 발생 - ErrorCode에 정의한 status, customMessage 반환")
   @WithMockUser
-  void handleApplicationExceptionWithCustomMessage() throws Exception {
+  void handleServiceExceptionWithCustomMessage() throws Exception {
     // given
     String code = "NOT_FOUND";
     String customMessage = "MessageResolver를 사용하지 않은 커스텀 메세지";

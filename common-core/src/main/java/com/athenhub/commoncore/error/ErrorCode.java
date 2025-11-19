@@ -4,7 +4,7 @@ package com.athenhub.commoncore.error;
  * 애플리케이션 전역에서 사용되는 공통 에러 코드를 정의하는 인터페이스.
  *
  * <p>각 도메인은 이 인터페이스를 구현한 열거형(enum)을 통해 에러 식별자(code)와 HTTP 상태(status)를 명시적으로 선언한다. 예외 발생 시 {@link
- * AbstractApplicationException}에서 이 정보를 활용해 응답 상태 코드와 메시지 변환을 일관성 있게 처리한다.
+ * AbstractServiceException}에서 이 정보를 활용해 응답 상태 코드와 메시지 변환을 일관성 있게 처리한다.
  *
  * <p>일반적인 사용 예:
  *

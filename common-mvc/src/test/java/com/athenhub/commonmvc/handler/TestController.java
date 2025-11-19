@@ -1,6 +1,6 @@
 package com.athenhub.commonmvc.handler;
 
-import com.athenhub.commoncore.error.AbstractApplicationException;
+import com.athenhub.commoncore.error.AbstractServiceException;
 import com.athenhub.commoncore.error.ErrorCode;
 import com.athenhub.commoncore.error.GlobalErrorCode;
 import jakarta.validation.Valid;
@@ -112,7 +112,7 @@ public class TestController {
    *
    * <p>공통 예외 처리기가 이 예외를 잡아 ErrorResponse로 변환하는지 검증한다.
    */
-  static class TestApplicationException extends AbstractApplicationException {
+  static class TestApplicationException extends AbstractServiceException {
 
     /**
      * 테스트용 기본 생성자.

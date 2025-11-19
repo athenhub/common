@@ -16,7 +16,7 @@ package com.athenhub.commoncore.error;
  * @author 김지원
  * @since 0.2.0
  */
-public abstract class AbstractApplicationException extends RuntimeException {
+public abstract class AbstractServiceException extends RuntimeException {
 
   /** 에러 식별자 및 HTTP 상태를 포함한 공통 에러 코드. */
   private final ErrorCode errorCode;
@@ -34,7 +34,7 @@ public abstract class AbstractApplicationException extends RuntimeException {
    * @param errorCode 에러 코드
    * @param errorArgs 메시지 포맷 인자
    */
-  public AbstractApplicationException(ErrorCode errorCode, Object... errorArgs) {
+  public AbstractServiceException(ErrorCode errorCode, Object... errorArgs) {
     this.errorCode = errorCode;
     this.errorArgs = errorArgs;
   }
@@ -46,7 +46,7 @@ public abstract class AbstractApplicationException extends RuntimeException {
    * @param message 사용자 정의 메시지 (MessageSource 우선 적용)
    * @param errorArgs 메시지 포맷 인자
    */
-  public AbstractApplicationException(ErrorCode errorCode, String message, Object... errorArgs) {
+  public AbstractServiceException(ErrorCode errorCode, String message, Object... errorArgs) {
     super(message);
     this.errorCode = errorCode;
     this.errorArgs = errorArgs;
@@ -60,7 +60,7 @@ public abstract class AbstractApplicationException extends RuntimeException {
    * @param cause 발생 원인
    * @param errorArgs 메시지 포맷 인자
    */
-  public AbstractApplicationException(
+  public AbstractServiceException(
       ErrorCode errorCode, String message, Throwable cause, Object... errorArgs) {
     super(message, cause);
     this.errorCode = errorCode;
@@ -74,7 +74,7 @@ public abstract class AbstractApplicationException extends RuntimeException {
    * @param cause 발생 원인
    * @param errorArgs 메시지 포맷 인자
    */
-  public AbstractApplicationException(ErrorCode errorCode, Throwable cause, Object... errorArgs) {
+  public AbstractServiceException(ErrorCode errorCode, Throwable cause, Object... errorArgs) {
     super(cause);
     this.errorCode = errorCode;
     this.errorArgs = errorArgs;

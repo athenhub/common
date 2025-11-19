@@ -1,6 +1,6 @@
 package com.athenhub.commonmvc.handler;
 
-import com.athenhub.commoncore.error.AbstractApplicationException;
+import com.athenhub.commoncore.error.AbstractServiceException;
 import com.athenhub.commoncore.error.ErrorCode;
 import com.athenhub.commoncore.error.ErrorResponse;
 import com.athenhub.commoncore.error.FieldError;
@@ -28,7 +28,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
  * <p>예외 처리 시 다음 기준에 따라 동작한다:
  *
  * <ul>
- *   <li>{@link AbstractApplicationException} : 비즈니스 예외 → ErrorCode 기반 메시지 생성
+ *   <li>{@link AbstractServiceException} : 비즈니스 예외 → ErrorCode 기반 메시지 생성
  *   <li>{@link MethodArgumentNotValidException} : 검증 실패 예외 → VALIDATION_ERROR 사용
  *   <li>{@link Exception} : 처리되지 않은 모든 예외 → INTERNAL_SERVER_ERROR 처리
  * </ul>
@@ -46,16 +46,15 @@ public class MvcExceptionHandler {
   private final MessageResolver messageResolver;
 
   /**
-   * 비즈니스 예외(ApplicationException)를 처리한다.
+   * 비즈니스 예외(ServiceException)를 처리한다.
    *
    * <p>커스텀 예외는 ErrorCode 및 ErrorArgs를 기반으로 메시지를 생성하며, 개발자가 전달한 직접 메시지가 있는 경우 그 메시지가 우선 적용된다.
    *
    * @param e 발생한 커스텀 애플리케이션 예외
    * @return ErrorResponse 형태의 HTTP 응답
    */
-  @ExceptionHandler(value = AbstractApplicationException.class)
-  public ResponseEntity<ErrorResponse<Void>> handleApplicationException(
-      AbstractApplicationException e) {
+  @ExceptionHandler(value = AbstractServiceException.class)
+  public ResponseEntity<ErrorResponse<Void>> handleServiceException(AbstractServiceException e) {
     log.error("[{}]", e.getClass().getSimpleName(), e);
 
     String message =
