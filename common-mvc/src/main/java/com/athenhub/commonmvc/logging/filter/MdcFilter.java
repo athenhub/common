@@ -25,6 +25,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
  */
 public class MdcFilter extends OncePerRequestFilter {
 
+  private static final String REQUEST_USERNAME_KEY = "X-Username";
+  private static final String DEFAULT_REQUEST_USERNAME = "SYSTEM";
+
   /**
    * 요청마다 requestId와 인증 사용자명을 MDC에 저장하고, 요청 처리가 끝나면 MDC를 초기화한다.
    *
@@ -55,7 +58,7 @@ public class MdcFilter extends OncePerRequestFilter {
    * @return 인증된 사용자명 또는 기본값 "SYSTEM"
    */
   private String getUsername(HttpServletRequest request) {
-    String username = request.getHeader("X-Username");
-    return StringUtils.hasText(username) ? username : "SYSTEM";
+    String username = request.getHeader(REQUEST_USERNAME_KEY);
+    return StringUtils.hasText(username) ? username : DEFAULT_REQUEST_USERNAME;
   }
 }

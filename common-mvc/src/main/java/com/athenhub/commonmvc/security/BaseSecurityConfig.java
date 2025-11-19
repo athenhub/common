@@ -2,6 +2,7 @@ package com.athenhub.commonmvc.security;
 
 import com.athenhub.commonmvc.security.filter.LoginFilter;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
@@ -78,6 +79,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * @author 김형섭
  * @since 0.4.0
  */
+@Slf4j
 public abstract class BaseSecurityConfig {
 
   /**
@@ -157,7 +159,10 @@ public abstract class BaseSecurityConfig {
    * @return 인증 실패 시 동작할 {@link AuthenticationEntryPoint}
    */
   protected AuthenticationEntryPoint authenticationEntryPoint() {
-    return (req, res, e) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+    return (req, res, e) -> {
+      log.info("{}: {}", e.getClass().getSimpleName(), e.getMessage());
+      res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+    };
   }
 
   /**
@@ -169,6 +174,9 @@ public abstract class BaseSecurityConfig {
    * @return 접근 거부 시 동작할 {@link AccessDeniedHandler}
    */
   protected AccessDeniedHandler accessDeniedHandler() {
-    return (req, res, e) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+    return (req, res, e) -> {
+      log.info("{}: {}", e.getClass().getSimpleName(), e.getMessage());
+      res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+    };
   }
 }
