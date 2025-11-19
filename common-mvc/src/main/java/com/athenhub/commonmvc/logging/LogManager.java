@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  *
  * <pre>
  * - RestController 요청 진입/종료 시점 로그 기록
- * - @LogExecution 애노테이션 적용 메서드 진입/종료 시점 로그 기록
+ * - {@code @LogExecution } 어노테이션 적용 메서드 진입/종료 시점 로그 기록
  * - 예외 발생 시 MDC 정보와 함께 에러 로그 기록
  * - MDCUtils를 통해 요청 ID 및 인증 계정 정보 포함
  * </pre>
@@ -52,6 +52,26 @@ public class LogManager {
       final String methodInfo,
       final String resultJson) {
     log.info("{}, Return: {}", formLogMessage(httpMethod, requestUri, methodInfo), resultJson);
+  }
+
+  /**
+   * {@code @LogExecution} 애노테이션이 적용된 메서드 진입 시점에 메서드 정보 및 추가 메시지를 INFO 레벨로 기록한다.
+   *
+   * @param methodInfo 호출된 메서드 정보 (ClassName.methodName)
+   * @param logMessage 추가 로그 메시지 (파라미터 정보 등)
+   */
+  public void logMethodEntry(final String methodInfo, final String logMessage) {
+    log.info("{} {}", formCoreLogMessage(methodInfo), logMessage);
+  }
+
+  /**
+   * {@code @LogExecution} 애노테이션이 적용된 메서드 종료 시점에 메서드 정보 및 반환 결과를 INFO 레벨로 기록한다.
+   *
+   * @param methodInfo 호출된 메서드 정보 (ClassName.methodName)
+   * @param resultJson 반환된 결과(JSON 또는 클래스명)
+   */
+  public void logMethodExit(final String methodInfo, final String resultJson) {
+    log.info("{}, Return: {}", formCoreLogMessage(methodInfo), resultJson);
   }
 
   /**

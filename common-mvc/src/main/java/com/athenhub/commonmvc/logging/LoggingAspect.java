@@ -65,6 +65,35 @@ public class LoggingAspect {
   }
 
   /**
+   * {@code @LogExecution} 애노테이션이 적용된 메서드의 진입과 종료를 로깅한다.
+   *
+   * @param pjp 호출 대상 JoinPoint
+   * @return 실제 메서드 실행 결과
+   * @throws Throwable 내부 메서드 예외 발생 시 전달
+   */
+  @Around("@annotation(com.athenhub.commonmvc.logging.LogExecution)")
+  public Object logExecution(ProceedingJoinPoint pjp) throws Throwable {
+    String methodInfo = extractMethodInfo(pjp);
+    MethodSignature signature = (MethodSignature) pjp.getSignature();
+    String logMessage = buildLogMessage(signature, pjp.getArgs());
+
+    logManager.logMethodEntry(methodInfo, logMessage);
+
+    Object result = pjp.proceed();
+    String resultJson;
+
+    try {
+      resultJson = GsonUtils.toJson(result);
+    } catch (Exception e) {
+      resultJson = result.getClass().getName();
+    }
+
+    logManager.logMethodExit(methodInfo, resultJson);
+
+    return result;
+  }
+
+  /**
    * 현재 HTTP 요청 객체를 조회한다.
    *
    * @return HttpServletRequest 현재 요청, 없으면 null
