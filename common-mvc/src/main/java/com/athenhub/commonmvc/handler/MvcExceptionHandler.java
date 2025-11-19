@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /**
  * MVC 환경에서 발생하는 예외를 공통으로 처리하는 글로벌 예외 처리기.
@@ -171,6 +172,25 @@ public class MvcExceptionHandler {
         ErrorResponse.of(
             errorCode.getCode(),
             messageResolver.resolve(errorCode.getCode(), e.getName(), e.getValue()));
+
+    return ResponseEntity.status(errorCode.getStatus()).body(body);
+  }
+
+  /**
+   * 존재하지 않는 경로(URL) 요청 시 발생하는 {@link NoResourceFoundException} 예외 처리기.
+   *
+   * <p>예: "/unknown-path" 요청 시 해당 URL을 처리할 컨트롤러 핸들러가 없으면 Spring MVC는 {@code
+   * NoResourceFoundException}을 발생시킨다.
+   *
+   * <p>전역 에러 코드 {@code NO_RESOURCE_FOUND}에 매핑하며, 메시지 템플릿은 별도 치환값 없이 사용자에게 "요청하신 리소스를 찾을 수 없습니다." 와
+   * 같은 고정 안내 문구를 제공한다.
+   */
+  @ExceptionHandler(value = NoResourceFoundException.class)
+  public ResponseEntity<ErrorResponse<Void>> handlerNoResourceFoundException(
+      NoResourceFoundException e) {
+    ErrorCode errorCode = GlobalErrorCode.NO_RESOURCE_FOUND;
+    ErrorResponse<Void> body =
+        ErrorResponse.of(errorCode.getCode(), messageResolver.resolve(errorCode.getCode()));
 
     return ResponseEntity.status(errorCode.getStatus()).body(body);
   }

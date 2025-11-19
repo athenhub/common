@@ -64,6 +64,9 @@ public enum GlobalErrorCode implements ErrorCode {
   /** 지원되지 않는 HTTP 메서드 요청 시 반환되는 에러 코드 (405 Method Not Allowed). */
   METHOD_NOT_ALLOWED(405, "METHOD_NOT_ALLOWED"),
 
+  /** 요청한 URL 또는 리소스를 찾을 수 없는 경우. */
+  NO_RESOURCE_FOUND(404, "NO_RESOURCE_FOUND"),
+
   /** 서버 내부 처리 중 예상치 못한 오류가 발생한 경우. */
   INTERNAL_SERVER_ERROR(500, "INTERNAL_SERVER_ERROR");
 
