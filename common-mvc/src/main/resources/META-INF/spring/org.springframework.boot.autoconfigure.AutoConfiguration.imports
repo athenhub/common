@@ -1,0 +1,3 @@
+com.athenhub.commonmvc.autoconfig.LoggingAspectAutoConfiguration
+com.athenhub.commonmvc.autoconfig.MvcExceptionHandlerAutoConfiguration
+com.athenhub.commonmvc.autoconfig.DefaultSecurityAutoConfiguration

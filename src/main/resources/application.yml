@@ -1,7 +1,0 @@
-spring:
-  application:
-    name: common
-
-  messages:
-    encoding: UTF-8
-    basename: messages

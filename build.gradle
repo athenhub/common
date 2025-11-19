@@ -1,141 +1,125 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.5.7' apply false
-    id 'io.spring.dependency-management' version '1.1.7'
     id 'maven-publish'
-    id 'java-library'
-
-    id 'checkstyle'
-    id 'com.diffplug.spotless' version "6.25.0"
+    id 'io.spring.dependency-management' version '1.1.7' apply false
+    id 'com.diffplug.spotless' version "6.25.0" apply false
 }
-
-group = 'com.athenhub'
-version = '0.4.0'
-description = 'com.athenhub.common'
-
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-    withSourcesJar()
-    withJavadocJar()
-}
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation(platform("org.springframework.boot:spring-boot-dependencies:3.5.7"))
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-
-    compileOnly 'org.projectlombok:lombok:1.18.42'
-    annotationProcessor 'org.projectlombok:lombok:1.18.42'
-
-    // aop
-    implementation 'org.springframework.boot:spring-boot-starter-aop'
-    // gson
-    implementation 'com.google.code.gson:gson'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-}
-
 
 allprojects {
+    group = 'com.athenhub'
+    version = '0.5.0'
+    description = 'com.athenhub.common'
+}
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+    apply plugin: 'checkstyle'
+    apply plugin: 'com.diffplug.spotless'
+
+
     tasks.withType(JavaCompile) {
         options.compilerArgs += ["-parameters"]
     }
-}
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
 
-tasks.withType(Javadoc) {
-    options.addStringOption('Xdoclint:none', '-quiet')
-}
+    tasks.withType(Javadoc) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+    }
 
-publishing {
+    // Lint
+    checkstyle {
+        toolVersion = "12.1.2"
+        configFile = rootProject.file("config/checkstyle/checkstyle.xml")
+        showViolations = true
+    }
+
+    tasks.withType(Checkstyle) {
+        reports {
+            xml.required = false
+            html.required = true
+        }
+    }
+
+    tasks.named("check") {
+        dependsOn "checkstyleMain", "checkstyleTest"
+    }
+
+    spotless {
+        java {
+            googleJavaFormat() // Google Java 스타일 강제
+            target "src/**/*.java"
+        }
+    }
+
+    tasks.check {
+        dependsOn "spotlessCheck"
+    }
+
     repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/athenhub/common")
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
+        mavenCentral()
     }
 
-    publications {
-        gpr(MavenPublication) {
-            artifactId = 'common'
-            from(components.java)
-
-            pom {
-                name = 'Athenhub Common'
-                description = 'Common library for Athenhub services'
-                url = 'https://github.com/athenhub/common'
-
-                licenses {
-                    license {
-                        name = 'MIT License'
-                        url = 'https://opensource.org/licenses/MIT'
-                    }
-                }
-
-                developers {
-                    developer {
-                        id = 'JKjiwon'
-                        name = 'Jiwon Kim'
-                        email = 'jwkim.oa@gmail.com'
-                    }
-                }
-                scm {
-                    connection = 'scm:git:git://github.com/athenhub/common.git'
-                    developerConnection = 'scm:git:ssh://github.com/athenhub/common.git'
-                    url = 'https://github.com/athenhub/common'
-                }
-            }
-        }
-    }
-}
-
-checkstyle {
-    toolVersion = "12.1.2"
-    configFile = rootProject.file("config/checkstyle/checkstyle.xml")
-    showViolations = true
-}
-
-tasks.withType(Checkstyle) {
-    reports {
-        xml.required = false
-        html.required = true
-    }
-}
-
-tasks.named("check") {
-    dependsOn "checkstyleMain", "checkstyleTest"
-}
-
-spotless {
     java {
-        googleJavaFormat() // Google Java 스타일 강제
-        target "src/**/*.java"
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+        withSourcesJar()
+        withJavadocJar()
+    }
+
+    dependencies {
+        compileOnly 'org.projectlombok:lombok:1.18.42'
+        annotationProcessor 'org.projectlombok:lombok:1.18.42'
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifactId = project.name
+
+                pom {
+                    name = "Athenhub ${project.name}"
+                    description = "${project.name} module"
+                    url = "https://github.com/athenhub/common"
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/athenhub/common")
+                credentials {
+                    username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                    password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+                }
+            }
+        }
     }
 }
 
-tasks.check {
-    dependsOn "spotlessCheck"
+configure([project(":common-core"), project(":common-utils")]) {
+    dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+        testImplementation 'org.assertj:assertj-core:3.27.6'
+    }
+}
+
+
+configure([project(":common-mvc")]) {
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-security'
+        testImplementation 'org.springframework.security:spring-security-test'
+        implementation(platform("org.springframework.boot:spring-boot-dependencies:3.5.7"))
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
 }
