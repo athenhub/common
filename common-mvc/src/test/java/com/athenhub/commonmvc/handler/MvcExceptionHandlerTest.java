@@ -192,8 +192,7 @@ public class MvcExceptionHandlerTest {
     // given
     String code = "TYPE_MISMATCH";
     String message = "파라미터 id의 값 abc는 올바르지 않습니다.";
-    given(messageResolver.resolve(GlobalErrorCode.TYPE_MISMATCH.getCode(), "id", "abc"))
-        .willReturn(message);
+    given(messageResolver.resolve(code, "id", "abc")).willReturn(message);
 
     // when & then
     mockMvc
@@ -210,7 +209,7 @@ public class MvcExceptionHandlerTest {
     // given
     String code = "NO_RESOURCE_FOUND";
     String message = "요청하신 리소스를 찾을 수 없습니다.";
-    given(messageResolver.resolve(GlobalErrorCode.NO_RESOURCE_FOUND.getCode())).willReturn(message);
+    given(messageResolver.resolve(code)).willReturn(message);
 
     // when & then
     mockMvc
@@ -227,7 +226,7 @@ public class MvcExceptionHandlerTest {
     // given
     String code = "FORBIDDEN";
     String message = "접근 권한이 없습니다. 요청이 거부되었습니다.";
-    given(messageResolver.resolve("FORBIDDEN")).willReturn(message);
+    given(messageResolver.resolve(code)).willReturn(message);
 
     // when & then
     mockMvc
