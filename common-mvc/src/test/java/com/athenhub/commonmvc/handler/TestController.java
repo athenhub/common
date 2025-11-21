@@ -6,6 +6,7 @@ import com.athenhub.commoncore.error.GlobalErrorCode;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -110,6 +111,22 @@ public class TestController {
    */
   @GetMapping("/mismatch/{id}")
   public String typeMismatchException(@PathVariable Long id) {
+    return "ok";
+  }
+
+  /**
+   * 권한 체크 테스트용 엔드포인트.
+   *
+   * <p>{@code ROLE_MANAGER} 역할을 가진 사용자만 접근할 수 있도록 설정된 API이다. Spring Security의 권한 검증(@PreAuthorize)
+   * 동작을 확인하기 위한 목적으로 사용된다.
+   *
+   * <p>정상적으로 권한이 부여된 경우 단순 문자열 "ok"를 반환한다.
+   *
+   * @return "ok" (테스트 응답)
+   */
+  @PreAuthorize("hasRole('MANAGER')")
+  @GetMapping("/access-denial")
+  public String accessDenialException() {
     return "ok";
   }
 

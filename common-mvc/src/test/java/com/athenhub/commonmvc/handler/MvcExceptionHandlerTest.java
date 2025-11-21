@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -191,8 +192,7 @@ public class MvcExceptionHandlerTest {
     // given
     String code = "TYPE_MISMATCH";
     String message = "파라미터 id의 값 abc는 올바르지 않습니다.";
-    given(messageResolver.resolve(GlobalErrorCode.TYPE_MISMATCH.getCode(), "id", "abc"))
-        .willReturn(message);
+    given(messageResolver.resolve(code, "id", "abc")).willReturn(message);
 
     // when & then
     mockMvc
@@ -209,7 +209,7 @@ public class MvcExceptionHandlerTest {
     // given
     String code = "NO_RESOURCE_FOUND";
     String message = "요청하신 리소스를 찾을 수 없습니다.";
-    given(messageResolver.resolve(GlobalErrorCode.NO_RESOURCE_FOUND.getCode())).willReturn(message);
+    given(messageResolver.resolve(code)).willReturn(message);
 
     // when & then
     mockMvc
@@ -219,6 +219,24 @@ public class MvcExceptionHandlerTest {
         .andExpect(jsonPath("$.message").value(message));
   }
 
+  @Test
+  @DisplayName("접근 권한이 없는 유저가 요청 - 403 FORBIDDEN 반환")
+  @WithMockUser(roles = "USER")
+  void handlerAccessDenialException() throws Exception {
+    // given
+    String code = "FORBIDDEN";
+    String message = "접근 권한이 없습니다. 요청이 거부되었습니다.";
+    given(messageResolver.resolve(code)).willReturn(message);
+
+    // when & then
+    mockMvc
+        .perform(get("/test/access-denial"))
+        .andExpect(status().isForbidden())
+        .andExpect(jsonPath("$.code").value(code))
+        .andExpect(jsonPath("$.message").value(message));
+  }
+
+  @EnableMethodSecurity
   @TestConfiguration
   static class TestSecurityConfig {
     @Bean
