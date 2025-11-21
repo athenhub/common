@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -189,6 +190,28 @@ public class MvcExceptionHandler {
   public ResponseEntity<ErrorResponse<Void>> handlerNoResourceFoundException(
       NoResourceFoundException e) {
     ErrorCode errorCode = GlobalErrorCode.NO_RESOURCE_FOUND;
+    ErrorResponse<Void> body =
+        ErrorResponse.of(errorCode.getCode(), messageResolver.resolve(errorCode.getCode()));
+
+    return ResponseEntity.status(errorCode.getStatus()).body(body);
+  }
+
+  /**
+   * AccessDeniedException 예외 처리기.
+   *
+   * <p>Spring Security에서 인증은 되었지만 특정 리소스에 대한 접근 권한이 부족할 때 {@link AccessDeniedException}이 발생한다. 이
+   * 핸들러는 해당 예외를 가로채어 전역 에러 코드 {@code FORBIDDEN}에 매핑된 표준 응답을 반환한다.
+   *
+   * <p>클라이언트는 HTTP 403 상태 코드와 함께 전역 에러 메시지를 전달받는다.
+   *
+   * @param e 접근 권한 부족 시 발생하는 예외
+   * @return HTTP 403 Forbidden + 표준 에러 응답 본문
+   * @author 김지원
+   * @since 1.2.0
+   */
+  @ExceptionHandler(value = AccessDeniedException.class)
+  public ResponseEntity<ErrorResponse<Void>> handlerAccessDeniedException(AccessDeniedException e) {
+    ErrorCode errorCode = GlobalErrorCode.FORBIDDEN;
     ErrorResponse<Void> body =
         ErrorResponse.of(errorCode.getCode(), messageResolver.resolve(errorCode.getCode()));
 

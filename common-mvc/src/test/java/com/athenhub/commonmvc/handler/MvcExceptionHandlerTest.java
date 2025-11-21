@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -219,6 +220,24 @@ public class MvcExceptionHandlerTest {
         .andExpect(jsonPath("$.message").value(message));
   }
 
+  @Test
+  @DisplayName("접근 권한이 없는 유저가 요청 - 403 FORBIDDEN 반환")
+  @WithMockUser(roles = "USER")
+  void handlerAccessDenialException() throws Exception {
+    // given
+    String code = "FORBIDDEN";
+    String message = "접근 권한이 없습니다. 요청이 거부되었습니다.";
+    given(messageResolver.resolve("FORBIDDEN")).willReturn(message);
+
+    // when & then
+    mockMvc
+        .perform(get("/test/access-denial"))
+        .andExpect(status().isForbidden())
+        .andExpect(jsonPath("$.code").value(code))
+        .andExpect(jsonPath("$.message").value(message));
+  }
+
+  @EnableMethodSecurity
   @TestConfiguration
   static class TestSecurityConfig {
     @Bean

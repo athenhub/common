@@ -168,15 +168,15 @@ public abstract class BaseSecurityConfig {
   /**
    * 인증은 되었지만 권한이 부족한 요청(접근 거부)에 대해 처리할 {@link AccessDeniedHandler}를 반환합니다.
    *
-   * <p>기본 구현은 {@link HttpServletResponse#SC_UNAUTHORIZED} (401) 상태 코드를 전송합니다. (필요시 403으로 변경하거나,
-   * JSON 형식 응답을 하려면 오버라이드하세요.)
+   * <p>기본 구현은 {@link HttpServletResponse#SC_FORBIDDEN} (403) 상태 코드를 전송합니다. (JSON 형식 응답을 하려면
+   * 오버라이드하세요.)
    *
    * @return 접근 거부 시 동작할 {@link AccessDeniedHandler}
    */
   protected AccessDeniedHandler accessDeniedHandler() {
     return (req, res, e) -> {
       log.info("{}: {}", e.getClass().getSimpleName(), e.getMessage());
-      res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+      res.sendError(HttpServletResponse.SC_FORBIDDEN);
     };
   }
 }
