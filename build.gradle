@@ -7,7 +7,7 @@ plugins {
 
 allprojects {
     group = 'com.athenhub'
-    version = '1.1.2'
+    version = '1.2.0'
     description = 'com.athenhub.common'
 }
 
