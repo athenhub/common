@@ -1,0 +1,19 @@
+# OPEN DOC API \uC124\uC815
+springdoc:
+  version: '1.0.0'
+  api-docs:
+    path: /v3/api-docs
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+    path: /api-docs.html
+    disable-swagger-default-url: true
+    doc-expansion: full
+  paths-to-match:
+    - /**
+
+openapi:
+  service:
+    url: http://localhost:9000
