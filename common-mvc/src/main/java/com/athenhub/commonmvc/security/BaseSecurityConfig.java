@@ -122,17 +122,43 @@ public abstract class BaseSecurityConfig {
   }
 
   /**
-   * HTTP 요청별 권한(인가) 규칙을 커스터마이즈할 {@link Customizer}를 반환합니다.
+   * HTTP 요청별 인가(Authorization) 규칙을 정의한다.
    *
-   * <p>기본 구현은 모든 요청에 대해 인증을 요구하도록 설정(`registry.anyRequest().authenticated()`)합니다. 엔드포인트별 접근 제어나 세부
-   * 규칙이 필요하면 하위 클래스에서 이 메서드를 오버라이드하세요.
+   * <p>기본적으로 모든 요청은 인증(authenticated)을 요구하지만, {@link #defaultPermitAllPaths()} 에 정의된 경로는 예외적으로 인증
+   * 없이 접근을 허용한다.
    *
-   * @return {@link AuthorizeHttpRequestsConfigurer}의 설정을 커스터마이즈할 {@link Customizer}
+   * <p>주로 Swagger, API 문서, 헬스 체크 등 인증이 필요 없는 공용 엔드포인트를 열어두기 위해 사용된다.
+   *
+   * @return 인가 규칙을 설정하는 {@link Customizer}
+   * @author 김지원
+   * @since 1.0.0
    */
   protected Customizer<
           AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry>
       authorizeHttpRequests() {
-    return registry -> registry.anyRequest().authenticated();
+
+    return registry ->
+        registry
+            // 기본적으로 허용할 엔드포인트는 인증 없이 접근 가능
+            .requestMatchers(defaultPermitAllPaths())
+            .permitAll()
+
+            // 그 외 모든 요청은 인증을 반드시 요구함
+            .anyRequest()
+            .authenticated();
+  }
+
+  /**
+   * 인증 없이 허용할 기본 경로 목록을 반환한다.
+   *
+   * <p>기본적으로 Swagger UI 및 OpenAPI 문서를 접근 가능하도록 설정되어 있다. 하위 클래스에서 override하여 경로를 추가/변경할 수 있다.
+   *
+   * @return permitAll 대상 경로 배열
+   * @author 김지원
+   * @since 1.0.0
+   */
+  protected String[] defaultPermitAllPaths() {
+    return new String[] {"/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"};
   }
 
   /**
