@@ -13,6 +13,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 /**
  * 공통적으로 적용할 Spring Security 보안 설정의 기반 클래스.
@@ -140,7 +142,7 @@ public abstract class BaseSecurityConfig {
     return registry ->
         registry
             // 기본적으로 허용할 엔드포인트는 인증 없이 접근 가능
-            .requestMatchers(defaultPermitAllPaths())
+            .requestMatchers(defaultPermitAllRequestMatchers())
             .permitAll()
 
             // 그 외 모든 요청은 인증을 반드시 요구함
@@ -149,16 +151,21 @@ public abstract class BaseSecurityConfig {
   }
 
   /**
-   * 인증 없이 허용할 기본 경로 목록을 반환한다.
+   * 인증 없이 허용할 기본 경로 Matcher 목록을 반환한다.
    *
-   * <p>기본적으로 Swagger UI 및 OpenAPI 문서를 접근 가능하도록 설정되어 있다. 하위 클래스에서 override하여 경로를 추가/변경할 수 있다.
+   * <p>Spring MVC 환경에 의존하지 않는 {@link PathPatternRequestMatcher}를 사용하여 테스트/경량 컨텍스트에서도 안정적으로 동작하도록
+   * 구성한다.
    *
-   * @return permitAll 대상 경로 배열
+   * @return permitAll 대상 {@link RequestMatcher} 배열
    * @author 김지원
    * @since 1.0.0
    */
-  protected String[] defaultPermitAllPaths() {
-    return new String[] {"/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"};
+  protected RequestMatcher[] defaultPermitAllRequestMatchers() {
+    return new RequestMatcher[] {
+      PathPatternRequestMatcher.withDefaults().matcher("/v3/api-docs/**"),
+      PathPatternRequestMatcher.withDefaults().matcher("/swagger-ui/**"),
+      PathPatternRequestMatcher.withDefaults().matcher("/swagger-ui.html")
+    };
   }
 
   /**
