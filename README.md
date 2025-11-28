@@ -5,7 +5,6 @@
 AthenHub 서비스 전반에서 반복적으로 등장하는 **에러 처리, 메시지 번역, 공통 응답 포맷, MVC 설정, 유틸리티 기능**을 하나의 플랫폼으로 통합하기 위해 설계된 *
 *멀티모듈 기반 공통 라이브러리**입니다.
 
----
 
 # 🎯 목적(Purpose)
 
@@ -14,7 +13,6 @@ AthenHub 서비스 전반에서 반복적으로 등장하는 **에러 처리, �
 - 공통 기능을 중앙 관리 → **변경 영향 최소화**
 - 서비스의 비즈니스 로직만 남도록 하는 **관심사 분리(Separation of Concerns)**
 
----
 
 # 🏗️ 멀티 모듈 구조(Multi-Module Architecture)
 
@@ -51,8 +49,6 @@ common/
 
 - 추후 common-webflux, common-kafka 등 새로운 공통 모듈 추가가 용이한 구조.
 
----
-
 # 📁 모듈별 상세 설명
 
 ## 1️⃣ common-core
@@ -77,8 +73,6 @@ AthenHub 서비스에서 반드시 일관되게 사용해야 하는
 - 가장 낮은 레벨의 모듈
 - MVC/Util/각 도메인 서비스에서 공통으로 참조
 
----
-
 ## 2️⃣ common-mvc
 
 ### 📌 의도 (Purpose)
@@ -100,8 +94,6 @@ Spring Boot 기반 서비스에서 반복되는 설정을 자동으로 등록하
 - framework-specific 설정은 모두 mvc 모듈에서 처리
 - service는 Controller/Service 로직에만 집중하게 함
 
----
-
 ## 3️⃣ common-util
 
 ### 📌 의도 (Purpose)
@@ -121,8 +113,6 @@ Spring Boot 기반 서비스에서 반복되는 설정을 자동으로 등록하
 - core/mvc/각 서비스 어디서든 참조 가능
 - 범용적이고 안정적인 로직 제공
 
----
-
 # 💡 결론 — 전사 통합 공통 플랫폼
 
 AthenHub 공통 모듈은 다음을 목표로 합니다:
@@ -132,13 +122,10 @@ AthenHub 공통 모듈은 다음을 목표로 합니다:
 - 비즈니스 코드와 환경 설정의 완전한 분리
 - 유지보수 효율 극대화
 
----
 # ⚙️ athenhub/common 라이브러리 설정 가이드
 
 본 문서는 `athenhub/common` 라이브러리를 Gradle 기반 프로젝트에서 설정 방법을 정리한 가이드입니다.  
 GitHub Packages 저장소를 활용하므로, 필요한 GitHub Token 발급 및 gradle.properties 설정 방법도 함께 안내합니다.
-
----
 
 ## 🧪 1. Maven 저장소 추가
 
