@@ -1,45 +1,138 @@
-# 📦 athenhub/common 라이브러리
+# AthenHub Common Modules
 
-# 💡0.3.0 버전 기능
+## 📦 공통 모듈 소개
 
-- LoggingAspect.class
-    - AOP 기반의 LoggingAspect 및 MDC 필터 추가
-    - 애플리케이션 전반의 컨트롤러 진입/종료 시점을 AOP로 로깅 처리하는 Aspect 클래스
-    - RestController 내의 모든 요청에 대해 HTTP 메서드, URI, 메서드명, 파라미터, 응답 결과를 로깅
+AthenHub 서비스 전반에서 반복적으로 등장하는 **에러 처리, 메시지 번역, 공통 응답 포맷, MVC 설정, 유틸리티 기능**을 하나의 플랫폼으로 통합하기 위해 설계된 *
+*멀티모듈 기반 공통 라이브러리**입니다.
 
-e.g.
+---
 
-```code
-2025-11-18T15:58:22.702+09:00  INFO 45009 --- [nio-8080-exec-3] com.athenhub.common.logging.LogManager   : POST /ex5 - Request ID: d5843b03-724c-498b-b797-eab2554cee55, Username: aj0123, Method: TestController.ex5 , Params: {person: Person[name=AJ, age=20]}
-2025-11-18T15:58:22.702+09:00  INFO 45009 --- [nio-8080-exec-3] c.athenhub.springboottest.TestService    : Person[name=AJ, age=20]
-2025-11-18T15:58:22.703+09:00  INFO 45009 --- [nio-8080-exec-3] com.athenhub.common.logging.LogManager   : POST /ex5 - Request ID: d5843b03-724c-498b-b797-eab2554cee55, Username: aj0123, Method: TestController.ex5, Return: "ok"
+# 🎯 목적(Purpose)
+
+- 서비스 전반의 **표준화와 일관성** 확보
+- 반복되는 설정 및 공통 기능 제거 → **개발 생산성 향상**
+- 공통 기능을 중앙 관리 → **변경 영향 최소화**
+- 서비스의 비즈니스 로직만 남도록 하는 **관심사 분리(Separation of Concerns)**
+
+---
+
+# 🏗️ 멀티 모듈 구조(Multi-Module Architecture)
+
+```
+common/
+  ├── common-core
+  ├── common-mvc
+  └── common-util
 ```
 
-- GsonUtils.class
-    - JSON 변환을 위한 유틸리티 클래스
-    - 싱글톤 Gson 인스턴스를 제공
-    - LocalDateTime 직렬화/역직렬화 어댑터 등록
+## 멀티모듈 도입 이유
 
-# 💡0.2.1 버전 기능
+1. 역할과 책임(Responsibility)의 명확한 분리
 
-## GlobalErrorHandler
+- 단일 모듈에서는 MVC, 유틸, 에러 규칙이 혼재되어 유지보수와 확장이 어려움.
+- 모듈 분리를 통해 SRP(Single Responsibility Principle)를 지키고 책임을 명확히 분리.
 
-- MvcExceptionHandler
-    - Spring MVC 환경에서 발생하는 예외를 공통 형태로 응답
-    - Validation, 비즈니스 예외 등 다양한 예외를 구조화된 JSON 형태로 반환
-    - 사용자가 직접 @RestControllerAdvice 또는 MvcExceptionHandler 빈을 등록하면 자동 생성되지 않음
-    - `athenhub.exception.mvc.enabled=true` 로 on/off 가능(default=true)
-    - `AbstractApplicationException` 을 상속 받아 사용자 예외 정의 가능
+2. 불필요한 의존성 제거 및 서비스 경량화
 
-- MessageResolver (MessageSourceResolver)
-    - MvcExceptionHandler 에서 code 변환시 MessageResolver 를 사용
-    - MessageSource 기반으로 메시지 코드 → 사람이 읽을 수 있는 메시지 변환
-    - `resources/messages.properties` 에 변환하고 싶은 메세지 추가 가능
-        ```properties
-        user.not.found=회원을 찾을 수 없습니다.
-        ```
-    - 현재는 Locale은 한글만 적용, 추후 국제화 고려
+- MVC 기능이 필요한 서비스만 common-mvc를 의존하도록 설정하여
+- 배치 서비스, 내부 모듈, 테스트 환경 등에서는 core/util만 가져가도록 최적화.
 
+3. 변경 영향(Impact) 최소화
+
+- core 변경 → mvc/util 영향 없음
+- mvc 변경 → core 영향 없음
+- 작은 수정이 전체에 영향 주지 않도록 설계.
+
+4. CI/CD 속도 및 빌드 효율성 증가
+
+- Gradle 멀티모듈 캐싱 → “변경된 모듈만 빌드” 가능
+
+5) 서비스 확장성을 고려한 설계
+
+- 추후 common-webflux, common-kafka 등 새로운 공통 모듈 추가가 용이한 구조.
+
+---
+
+# 📁 모듈별 상세 설명
+
+## 1️⃣ common-core
+
+### 📌 의도 (Purpose)
+
+> **전사 공통 규칙을 정의하는 가장 기본적인 레이어**
+
+Spring, MVC 등 프레임워크에 전혀 의존하지 않고  
+AthenHub 서비스에서 반드시 일관되게 사용해야 하는  
+**표준 규격·에러 모델·Value Object** 등을 담고 있습니다.
+
+### ✔ 주요 기능
+
+- `GlobalErrorCode` — 전사 공통 에러 코드 정의
+- `ApplicationException` — HTTP 상태/메시지/코드 기반 에러 추상화
+- 순수 Java 기반 모델, Value Object, 인터페이스 제공
+
+### ✔ 설계 철학
+
+- 프레임워크 독립
+- 가장 낮은 레벨의 모듈
+- MVC/Util/각 도메인 서비스에서 공통으로 참조
+
+---
+
+## 2️⃣ common-mvc
+
+### 📌 의도 (Purpose)
+
+> **Spring MVC 환경에서 필요로 하는 공통 기능을 자동화**
+
+Spring Boot 기반 서비스에서 반복되는 설정을 자동으로 등록하여 서비스 개발자가 비즈니스 로직에 집중할 수 있도록 돕습니다.
+
+### ✔ 주요 기능
+
+- Global Exception Handler 자동 등록
+- MessageResolver 및 i18n 메시지 처리
+- SpringDoc 기반 SwaggerConfig 자동 제공
+- Spring Boot AutoConfiguration 사용
+
+### ✔ 설계 철학
+
+- MVC 설정을 공통화하여 중복 제거
+- framework-specific 설정은 모두 mvc 모듈에서 처리
+- service는 Controller/Service 로직에만 집중하게 함
+
+---
+
+## 3️⃣ common-util
+
+### 📌 의도 (Purpose)
+
+> **다양한 서비스에서 재사용 가능한 일반 유틸 기능 제공**
+
+프레임워크와 무관한 순수 Java 유틸리티 기능을 제공하여 서비스별 중복 코드를 제거합니다.
+
+### ✔ 주요 기능
+
+- 문자열 유틸 / 날짜 유틸
+- Converter / Format 유틸
+
+### ✔ 설계 철학
+
+- 순수 Java 코드만 배치
+- core/mvc/각 서비스 어디서든 참조 가능
+- 범용적이고 안정적인 로직 제공
+
+---
+
+# 💡 결론 — 전사 통합 공통 플랫폼
+
+AthenHub 공통 모듈은 다음을 목표로 합니다:
+
+- 전사 기술 표준화
+- 서비스 간 일관성 확보
+- 비즈니스 코드와 환경 설정의 완전한 분리
+- 유지보수 효율 극대화
+
+---
 # ⚙️ athenhub/common 라이브러리 설정 가이드
 
 본 문서는 `athenhub/common` 라이브러리를 Gradle 기반 프로젝트에서 설정 방법을 정리한 가이드입니다.  
@@ -69,11 +162,13 @@ repositories {
 
 ## 📚 2. 의존성 추가
 
-`build.gradle` 에 다음과 같이 라이브러리 의존성을 등록하세요.
-
+- `build.gradle` 에 다음과 같이 라이브러리 의존성을 등록하세요.
+- 내 서비스에 필요한 의존성만 등록 할 수 있습니다.
 ```groovy
 dependencies {
-    implementation 'com.athenhub:common:{version}'
+    implementation 'com.athenhub:common-core:{version}'
+    implementation 'com.athenhub:common-util:{version}'
+    implementation 'com.athenhub:common-mvc:{version}'
 }
 ```
 
